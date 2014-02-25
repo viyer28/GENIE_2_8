@@ -1,0 +1,25 @@
+This is going to serve a mini-guide on validation/Hadronization.
+
+Currently, the package is under restructuring.
+
+The old classes are HadPlots and HadPlotter are still here.
+
+The new classes are: RunConfig, Analyzer, ExpData, and GenPlots<Base>/<ChHadW2>.
+
+The RunConfig knows how to read in am xml config that contains the list of
+Genie's pre-generated samples.
+It can also control the loop until the configuration is done.
+It can command the Analyzer to analyze events based on what sample it's
+currently on.
+
+It's the Analyzer that can loop over Genie's pre-generated events, look at
+specific observables, and at the end combine the outcome with exp.data plots.
+It's all inside the Analyzer, incl. ExpData object (with some currently
+hardcoded locations of the exp.datasets).
+
+However, in the near future more work will be done on ExpData, to teach it how
+to read in exp.,datasets from a config, etc.
+ExpData will probably need to move out of the Analyzer and into RunConfig.
+
+WORK IN PROGRESS !!!
+ 
