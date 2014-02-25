@@ -275,8 +275,8 @@ RANLIB    = ranlib
 
 # -- gcc
 
-CXX = g++-4.2
-LD  = g++-4.2
+CXX = g++
+LD  = g++
 
 # get gcc version & split in '.' delimited tokens (major/minor/revison num.)
 CXXVRS      = $(shell $(CXX) -dumpversion)
