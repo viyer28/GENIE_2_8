@@ -6,3 +6,4 @@ GENIE uses several third-party HEP codes:
 
 * [ROOT](http://root.cern.ch)
 * [LHAPDF](https://lhapdf.hepforge.org)
+* [Pythia](http://home.thep.lu.se/~torbjorn/Pythia.html)
