@@ -5,3 +5,4 @@ for code that is appropriate for publications-level physics analysis.
 GENIE uses several third-party HEP codes:
 
 * [ROOT](http://root.cern.ch)
+* [LHAPDF](https://lhapdf.hepforge.org)
