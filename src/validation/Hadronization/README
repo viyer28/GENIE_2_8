@@ -1,0 +1,79 @@
+
+WORK IN PROGRESS !!!!!
+
+This is going to serve a mini-guide on validation/Hadronization.
+
+** General note
+
+If using centrally installed Genie, it's safer to stick to v2_8_0d because
+a) It has a bug fix to correct an issue with the Makefile-related scripts
+b) It has all executable binaries in place, including gevgen
+
+** Running interactively
+
+*** Generation of Genie samples (input to validation job)
+
+This recipe is a short-cut extracted from $GENIE/src/production/batch/submit_hadronization_validation_mc_jobs.pl
+
+To produce interactively a (single) sample of 20K nu+p events in the energy range 0.5-80.0GeV, try to execute the following:
+gevgen -n 20000 -e 0.5, 80.0 -p 14 -t 1000000010 -f "1/x" \
+       -r <YOUR_RUN_NUMBER> --seed <YOUR_SEED> \
+       --cross-sections /path/to/gspl-vA-v2.8.0.xml \
+       -- event-generation-list HadronizationTest
+
+Note-1: Obviouosly, YOR_RUN_NUMBER and YOUR_SEED can be any sensible integerer of your choice.
+Note-2: -p==projectile, and it can be 14 (nu) or -14 (nubar).
+Note-3: -t==target, and it can be 1000000010 (p) or 1000010010 (n).
+        Those id's would indicate ions. 
+	Presumably, standard PDG id's can also be used (but I haven't tried).
+Note-4: gxsl-vA-v2.8.0.xml can be downloaded from http://www.hepforge.org/archive/genie/data/2.8.0/
+
+*** Running validation
+
+To build the validation application $GENIE/src/validation/Hadronization, please type this:
+make
+
+To run it, please try this:
+./gvld_hadronz_test -g <YOUR_LIST_OF_SAMPLES>.xml -f gif
+
+Here YOUR_LIST_OF_SAMPLES should be in the format similar to this below:
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<genie_simulation_outputs>
+         <model name="GENIE SVN 2.8.0">
+                 <evt_file format="ghep"> ./gntp.1.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./gntp.2.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./gntp.3.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./gntp.4.ghep.root </evt_file>
+         </model>
+</genie_simulation_outputs>
+
+The '-f gif' input argument that specify the output format. In particular, it'll make the application to produce 
+output plots in the form of GIF images.
+If you don't specify this option, the default will a single PS file.
+An eps or root formats are also possible.
+
+** Status of development 
+
+Currently, the package is under restructuring.
+
+The old classes are HadPlots and HadPlotter are still here.
+
+The new classes are: RunConfig, Analyzer, ExpData, and GenPlots<Base>/<ChHadW2>.
+
+The RunConfig knows how to read in am xml config that contains the list of
+Genie's pre-generated samples.
+It can also control the loop until the configuration is done.
+It can command the Analyzer to analyze events based on what sample it's
+currently on.
+
+It's the Analyzer that can loop over Genie's pre-generated events, look at
+specific observables, and at the end combine the outcome with exp.data plots.
+It's all inside the Analyzer, incl. ExpData object (with some currently
+hardcoded locations of the exp.datasets).
+
+However, in the near future more work will be done on ExpData, to teach it how
+to read in exp.,datasets from a config, etc.
+ExpData will probably need to move out of the Analyzer and into RunConfig.
+
+WORK IN PROGRESS !!!
+ 
