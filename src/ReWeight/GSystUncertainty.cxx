@@ -162,5 +162,32 @@ void GSystUncertainty::SetDefaults(void)
 
   this->SetUncertainty( kRDcyTwkDial_BR1gamma,       0.50, 0.50);
   this->SetUncertainty( kRDcyTwkDial_BR1eta,         0.50, 0.50);
+
+  //From the KNO hadron multiplicity reweighting
+  //
+  this->SetUncertainty( kKNO_alpha_vp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_alpha_vn, 0.1, 0.1);
+  this->SetUncertainty( kKNO_alpha_vbarp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_alpha_vbarn, 0.1, 0.1);
+  this->SetUncertainty( kKNO_beta_vp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_beta_vn, 0.1, 0.1);
+  this->SetUncertainty( kKNO_beta_vbarp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_beta_vbarn, 0.1, 0.1);
+  this->SetUncertainty( kKNO_Levyc_vp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_Levyc_vn, 0.1, 0.1);
+  this->SetUncertainty( kKNO_Levyc_vbarp, 0.1, 0.1);
+  this->SetUncertainty( kKNO_Levyc_vbarn, 0.1, 0.1);
+  
+  this->SetUncertainty( kKNO_AvgHad_Mult, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vn_mult_e2,, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vp_mult_e2, , 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vbarn_mult_e2, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vbarp_mult_e2, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vn_mult_gt2, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vp_mult_gt2, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vbarn_mult_gt2, 0.1, 0.1);
+  this->SetUncertainty( kKNO_ProbP_Baryon_vbarp_mult_gt2, 0.1, 0.1);
+
 }
 //____________________________________________________________________________
+											  
