@@ -391,17 +391,32 @@ STFC, Rutherford Appleton Laboratory
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Parameters controlling the PYTHIA hadronization model:
 
-             PYTHIA    NUX 2001   AGKY 2010 strange prod.
-             default   tune       re-tune (see gDocDB-890-v1)
-  - ssbar:   0.30      0.21       0.30
-  - pt2:     0.36 GeV  0.44 GeV
-  - pt2tail: 0.01      0.01    
-  - cutoff:  0.80 GeV  0.20 GeV
+             PYTHIA    NUX 2001   NuWro 2006   AGKY 2010 strange prod.
+             default   tune       tune         re-tune (see gDocDB-890-v1)
+  - ssbar:   0.30      0.21       0.30         0.30
+  - pt2:     0.36 GeV  0.44 GeV   0.36 GeV
+  - pt2tail: 0.01      0.01       0.01
+  - minjet:  1.00 GeV  1.00 GeV   0.10 GeV
+  - cutoff:  0.80 GeV  0.20 GeV   0.50 GeV
+  - cutoff2: 1.50 GeV  1.50 GeV   1.00 GeV
+  - massstop:2.00 GeV  2.00 GeV   0.30 GeV
+
   -->
+
+  <param type="double" name="PYTHIA-SSBarSuppression">      0.30 </param>
+  <param type="double" name="PYTHIA-GaussianPt2">           0.36 </param> 
+  <param type="double" name="PYTHIA-NonGaussianPt2Tail">    0.01 </param>
+  <param type="double" name="PYTHIA-MinSingleJet">          1.00 </param>
+  <param type="double" name="PYTHIA-RemainingEnergyCutoff"> 0.80 </param>
+  <param type="double" name="PYTHIA-RemainingEnergyCutoff2">1.50 </param>
+  <param type="double" name="PYTHIA-QuarkMassStop">         2.00 </param>
+
+<!--
   <param type="double" name="PYTHIA-SSBarSuppression">      0.30 </param>
   <param type="double" name="PYTHIA-GaussianPt2">           0.44 </param> 
   <param type="double" name="PYTHIA-NonGaussianPt2Tail">    0.01 </param>
   <param type="double" name="PYTHIA-RemainingEnergyCutoff"> 0.20 </param>
+-->
 
  <!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

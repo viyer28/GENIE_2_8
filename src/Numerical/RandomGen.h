@@ -34,6 +34,7 @@ public:
   //! Access instance
   static RandomGen * Instance();
 
+
   //! Random number generators used by various GENIE modules.
   //! (See note at http://root.cern.ch/root/html//TRandom.html
   //!  on using several TRandom objects each with each own
@@ -83,6 +84,18 @@ public:
   long int GetSeed (void)         const { return fCurrSeed; }
   void     SetSeed (long int seed);
 
+  //! This function allows to use user's random generator derived from the
+  //! TRandom3 class. Set fDeleteRndGen flag properly to control when 
+  //! we delete the fRandom3 instance.
+  void   SetTRandom3(TRandom3 *random);
+
+  //! set owner flag to decide if we delete fRandom3 at destructor
+  void   SetDeleteTRandom3(bool b = true) {fDeleteRndGen = b; }
+
+  //! This function allows to use user's random generator derived from the
+  //! TRandom3 class and give responsibility to delete fRandom3.
+  void   AdoptTRandom3(TRandom3 *random);
+
 private:
 
   RandomGen();
@@ -94,6 +107,7 @@ private:
   TRandom3 * fRandom3;    ///< Mersenne Twistor
   long int   fCurrSeed;   ///< random number generator seed number
   bool       fInitalized; ///< done initializing singleton?
+  bool       fDeleteRndGen; ///< Do we delete the TRandom3 in destractor?
 
   void InitRandomGenerators(long int seed);
 

@@ -461,13 +461,22 @@ void PythiaHadronization::LoadConfig(void)
                         "GaussianPt2", gc->GetDouble("PYTHIA-GaussianPt2"));
   fNonGaussianPt2Tail = fConfig->GetDoubleDef(
           "NonGaussianPt2Tail", gc->GetDouble("PYTHIA-NonGaussianPt2Tail"));
+  fMinSingleJet = fConfig->GetDoubleDef(
+          "MinSingleJet", gc->GetDouble("PYTHIA-MinSingleJet"));
   fRemainingECutoff = fConfig->GetDoubleDef(
     "RemainingEnergyCutoff", gc->GetDouble("PYTHIA-RemainingEnergyCutoff"));
+  fRemainingECutoff2 = fConfig->GetDoubleDef(
+    "RemainingEnergyCutoff2", gc->GetDouble("PYTHIA-RemainingEnergyCutoff2"));
+  fQuarkMassStop = fConfig->GetDoubleDef(
+    "QuarkMassStop", gc->GetDouble("PYTHIA-QuarkMassStop"));
 
   fPythia->SetPARJ(2,  fSSBarSuppression);
   fPythia->SetPARJ(21, fGaussianPt2);
   fPythia->SetPARJ(23, fNonGaussianPt2Tail);
+  fPythia->SetPARJ(32, fMinSingleJet);
   fPythia->SetPARJ(33, fRemainingECutoff);
+  fPythia->SetPARJ(34, fRemainingECutoff2);
+  fPythia->SetPARJ(36, fQuarkMassStop);
 
   // Load Wcut determining the phase space area where the multiplicity prob.
   // scaling factors would be applied -if requested-
