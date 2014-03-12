@@ -537,12 +537,12 @@ void KNOHadronization::LoadConfig(void)
   fBvbn = fConfig->GetDoubleDef("Beta-vbn",  gc->GetDouble("KNO-Beta-vbn"));
   //
   favg_had_mult      = fConfig->GetDoubleDef("favg_had_mult",      gc->GetDouble("KNO-AvgHad-Mult") );
-  fbary_vn_mult_e2   = fConfig->GetDoubleDef("fbary_vn_mult_e2",   gc->GetDouble("KNO-ProbP_Baryon_vn_mult_e2");
-  fbary_vbp_mult_e2  = fConfig->GetDoubleDef("fbary_vbp_mult_e2",  gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_e2");
-  fbary_vp_mult_gt2  = fConfig->GetDoubleDef("fbary_vp_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vp_mult_gt2");
-  fbary_vn_mult_gt2  = fConfig->GetDoubleDef("fbary_vn_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vn_mult_gt2");
-  fbary_vbp_mult_gt2 = fConfig->GetDoubleDef("fbary_vbp_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_gt2");
-  fbary_vbn_mult_gt2 = fConfig->GetDoubleDef("fbary_vbn_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbn_mult_gt2");
+  fbary_vn_mult_e2   = fConfig->GetDoubleDef("fbary_vn_mult_e2",   gc->GetDouble("KNO-ProbP_Baryon_vn_mult_e2"));
+  fbary_vbp_mult_e2  = fConfig->GetDoubleDef("fbary_vbp_mult_e2",  gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_e2"));
+  fbary_vp_mult_gt2  = fConfig->GetDoubleDef("fbary_vp_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vp_mult_gt2"));
+  fbary_vn_mult_gt2  = fConfig->GetDoubleDef("fbary_vn_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vn_mult_gt2"));
+  fbary_vbp_mult_gt2 = fConfig->GetDoubleDef("fbary_vbp_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_gt2"));
+  fbary_vbn_mult_gt2 = fConfig->GetDoubleDef("fbary_vbn_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbn_mult_gt2"));
 
   // Load parameters determining the prob of producing a strange baryon
   // via associated production
