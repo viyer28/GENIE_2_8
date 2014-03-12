@@ -380,6 +380,23 @@ STFC, Rutherford Appleton Laboratory
 
  <!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Parameter Controlling the Scaling for avg number of hadrons. Default is 1.5. 
+  -->
+  <param type="double"   name="KNO-AvgHad-Mult">     1.5  </param>
+
+ <!-- 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Parameter Controlling the Probability of choosing a proton for the Baryon in the Final State
+  -->
+  <param type="double"   name="KNO-ProbP_Baryon_vn_mult_e2">     0.33333  </param>
+  <param type="double"   name="KNO-ProbP_Baryon_vbp_mult_e2">    0.66667  </param>
+  <param type="double"   name="KNO-ProbP_Baryon_vp_mult_gt2">    0.66667  </param>
+  <param type="double"   name="KNO-ProbP_Baryon_vn_mult_gt2">    0.50000  </param>
+  <param type="double"   name="KNO-ProbP_Baryon_vbp_mult_gt2">   0.50000  </param>
+  <param type="double"   name="KNO-ProbP_Baryon_vbn_mult_gt2">   0.33333  </param>
+ 
+ <!-- 
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Parameters controlling whether to use the baryon xF and pT2 pdfs in the KNO hadronization.
   The option to use isotropic, non-reweighted 2-body phase space decays is used for compatibility
   with neugen/daikon.
