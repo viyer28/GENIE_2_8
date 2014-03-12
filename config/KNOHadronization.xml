@@ -52,6 +52,7 @@ UseIsotropic2BodyDec          bool    Yes   use isotropic, non-reweighted 2-body
                                             for compatibility with neuugen/daikon
 PhaseSpDec-Reweight           bool    Yes   reweight decays to to reproduce exp pT2       KNO-PhaseSpDec-Reweight
 PhaseSpDec-ReweightParm       double  Yes   parameter controlling the reweight function   KNO-PhaseSpDec-ReweightParm
+AvgHad-Mult                   double  Yes   parameter controlling avg hadron multiplicity KNO-AvgHad-Mult
 -->
 
 <alg_conf>
