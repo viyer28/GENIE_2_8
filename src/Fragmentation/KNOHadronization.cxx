@@ -328,11 +328,12 @@ TH1D * KNOHadronization::MultiplicityProb(
   int nuc_pdg = init_state.Tgt().HitNucPdg();
 
   // Compute the average charged hadron multiplicity as: <n> = a + b*ln(W^2)
-  // Calculate avergage hadron multiplicity (= 1.5 x charged hadron mult.)
+  // Calculate avergage hadron multiplicity (= fAvg_had x charged hadron mult. default is 1.5)
+
 
   double W     = utils::kinematics::W(interaction);
   double avnch = this->AverageChMult(nu_pdg, nuc_pdg, W);
-  double avn   = 1.5*avnch;
+  double avn   = favg_had_mult*avnch;
 
   SLOG("KNOHad", pINFO) 
       << "Average hadronic multiplicity (W=" << W << ") = " << avn;
@@ -534,6 +535,14 @@ void KNOHadronization::LoadConfig(void)
   fBvn  = fConfig->GetDoubleDef("Beta-vn",   gc->GetDouble("KNO-Beta-vn") ); 
   fBvbp = fConfig->GetDoubleDef("Beta-vbp",  gc->GetDouble("KNO-Beta-vbp")); 
   fBvbn = fConfig->GetDoubleDef("Beta-vbn",  gc->GetDouble("KNO-Beta-vbn"));
+  //
+  favg_had_mult      = fConfig->GetDoubleDef("favg_had_mult",      gc->GetDouble("KNO-AvgHad-Mult") );
+  fbary_vn_mult_e2   = fConfig->GetDoubleDef("fbary_vn_mult_e2",   gc->GetDouble("KNO-ProbP_Baryon_vn_mult_e2");
+  fbary_vbp_mult_e2  = fConfig->GetDoubleDef("fbary_vbp_mult_e2",  gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_e2");
+  fbary_vp_mult_gt2  = fConfig->GetDoubleDef("fbary_vp_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vp_mult_gt2");
+  fbary_vn_mult_gt2  = fConfig->GetDoubleDef("fbary_vn_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vn_mult_gt2");
+  fbary_vbp_mult_gt2 = fConfig->GetDoubleDef("fbary_vbp_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_gt2");
+  fbary_vbn_mult_gt2 = fConfig->GetDoubleDef("fbary_vbn_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbn_mult_gt2");
 
   // Load parameters determining the prob of producing a strange baryon
   // via associated production
@@ -1328,33 +1337,34 @@ int KNOHadronization::GenerateBaryonPdgCode(
   // Available hadronic system charge = 2
   if(maxQ == 2) {
      //for multiplicity ==2, force it to p
-     if(multiplicity ==2 ) pdgc = kPdgProton;
+     if(multiplicity ==2 ) 
+pdgc = kPdgProton;
      else {
-       if(x < 0.66667) pdgc = kPdgProton;
+       if(x < fbary_vp_mult_gt2) pdgc = kPdgProton;
      }
   }
   // Available hadronic system charge = 1
   if(maxQ == 1) {
      if(multiplicity == 2) {
-        if(x < 0.33333) pdgc = kPdgProton;
+        if(x < fbary_vn_mult_e2) pdgc = kPdgProton;
      } else {
-        if(x < 0.50000) pdgc = kPdgProton;
+        if(x < fbary_vn_mult_gt2) pdgc = kPdgProton;
      }
   }
 
   // Available hadronic system charge = 0
   if(maxQ == 0) {
      if(multiplicity == 2) {
-        if(x < 0.66667) pdgc = kPdgProton;
+        if(x < fbary_vbp_mult_e2) pdgc = kPdgProton;
      } else {
-        if(x < 0.50000) pdgc = kPdgProton;
+        if(x < fbary_vbp_mult_gt2) pdgc = kPdgProton;
      }
   }
   // Available hadronic system charge = -1
   if(maxQ == -1) {
      // for multiplicity == 2, force it to n
      if(multiplicity != 2) {
-        if(x < 0.33333) pdgc = kPdgProton;
+        if(x < fbary_vbn_mult_gt2) pdgc = kPdgProton;
      }
   }
 
