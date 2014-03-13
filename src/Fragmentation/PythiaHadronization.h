@@ -67,7 +67,6 @@ private:
   double fRemainingECutoff;   ///< remaining E cutoff for stopping fragmentation
   double fMinSingleJet;       ///< minimum allowed energy of color-singlet jet system
   double fRemainingECutoff2;  ///< remaining E cutoff for stopping fragmentation
-
   double fQuarkMassStop;      ///< quark mass dependence at stop point of fragmentation 
 };
 
