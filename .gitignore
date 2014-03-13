@@ -1,1 +1,11 @@
 _ROOT*
+*.o
+
+# Ignore build detritus
+build-env.log
+log.*
+src/Conventions/GBuild.h
+src/Conventions/GVersion.h
+src/make/Make.config
+
+
