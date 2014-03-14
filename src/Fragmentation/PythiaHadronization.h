@@ -65,6 +65,9 @@ private:
   double fGaussianPt2;        ///< gaussian pt2 distribution width
   double fNonGaussianPt2Tail; ///< non gaussian pt2 tail parameterization
   double fRemainingECutoff;   ///< remaining E cutoff for stopping fragmentation
+  double fMinSingleJet;       ///< minimum allowed energy of color-singlet jet system
+  double fRemainingECutoff2;  ///< remaining E cutoff for stopping fragmentation
+  double fQuarkMassStop;      ///< quark mass dependence at stop point of fragmentation 
 };
 
 }         // genie namespace

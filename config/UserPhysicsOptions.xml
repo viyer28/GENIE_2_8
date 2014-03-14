@@ -399,7 +399,7 @@ STFC, Rutherford Appleton Laboratory
   - minjet:  1.00 GeV  1.00 GeV   0.10 GeV
   - cutoff:  0.80 GeV  0.20 GeV   0.50 GeV
   - cutoff2: 1.50 GeV  1.50 GeV   1.00 GeV
-  - massstop:2.00 GeV  2.00 GeV   0.30 GeV
+  - massstop:2.00 GeV  2.00 GeV   0.30 GeV     param 0.30 GeV doesn't work with genie.
 
   -->
 
