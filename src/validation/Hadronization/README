@@ -15,15 +15,15 @@ b) It has all executable binaries in place, including gevgen
 
 This recipe is a short-cut extracted from $GENIE/src/production/batch/submit_hadronization_validation_mc_jobs.pl
 
-To produce interactively a (single) sample of 20K nu+p events in the energy range 0.5-80.0GeV, try to execute the following:
+To produce interactively a (single) sample of 20K nu+n events in the energy range 0.5-80.0GeV, try to execute the following:
 gevgen -n 20000 -e 0.5, 80.0 -p 14 -t 1000000010 -f "1/x" \
        -r <YOUR_RUN_NUMBER> --seed <YOUR_SEED> \
        --cross-sections /path/to/gspl-vA-v2.8.0.xml \
        -- event-generation-list HadronizationTest
 
-Note-1: Obviouosly, YOR_RUN_NUMBER and YOUR_SEED can be any sensible integerer of your choice.
+Note-1: Obviouosly, YOUR_RUN_NUMBER and YOUR_SEED can be any sensible integerer of your choice.
 Note-2: -p==projectile, and it can be 14 (nu) or -14 (nubar).
-Note-3: -t==target, and it can be 1000000010 (p) or 1000010010 (n).
+Note-3: -t==target, and it can be 1000000010 (n) or 1000010010 (p).
         Those id's would indicate ions. 
 	Presumably, standard PDG id's can also be used (but I haven't tried).
 Note-4: gxsl-vA-v2.8.0.xml can be downloaded from http://www.hepforge.org/archive/genie/data/2.8.0/
@@ -46,6 +46,15 @@ Here YOUR_LIST_OF_SAMPLES should be in the format similar to this below:
                  <evt_file format="ghep"> ./gntp.4.ghep.root </evt_file>
          </model>
 </genie_simulation_outputs>
+
+PLEASE NOTE that with the current implementation:
+** There MUST be all 4 samples on input (otherwise the job will result in a segfault)
+** The order of samples is IMPORTANT and should be as follows:
+   1. nu-n
+   2. nu-p
+   3. nubar-n
+   4. nubar-p
+
 
 The '-f gif' input argument that specify the output format. In particular, it'll make the application to produce 
 output plots in the form of GIF images.
