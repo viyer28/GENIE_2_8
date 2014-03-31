@@ -113,8 +113,6 @@ void NuclearModelMap::LoadConfig(void)
     dynamic_cast<const NuclearModelI *> (this->SubAlg("NuclearModel"));
   assert(fDefGlobModel);
 
-  // load refined models for specific nuclei
-
   // We're looking for keys that match this string
   const std::string keyStart = "NuclearModel@Pdg=";
   // Looking in both of these registries
@@ -141,6 +139,16 @@ void NuclearModelMap::LoadConfig(void)
       fRefinedModels.insert(map<int,const NuclearModelI*>::value_type(Z,model));
     }
   }
+ 
+  LOG("Nuclear", pDEBUG)
+    << "Finished LoadConfig";
+#ifdef __GENIE_LOW_LEVEL_MESG_ENABLED__
+  for (map<int,const NuclearModelI*>::iterator it = fRefinedModels.begin(); 
+      it != fRefinedModels.end(); ++it) {
+    LOG("Nuclear", pDEBUG)
+      << "Z = " << (*it).first << "; model = " << (*it).second;
+  }
+#endif
 }
 
 //____________________________________________________________________________
