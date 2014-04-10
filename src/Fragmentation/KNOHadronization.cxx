@@ -328,11 +328,12 @@ TH1D * KNOHadronization::MultiplicityProb(
   int nuc_pdg = init_state.Tgt().HitNucPdg();
 
   // Compute the average charged hadron multiplicity as: <n> = a + b*ln(W^2)
-  // Calculate avergage hadron multiplicity (= 1.5 x charged hadron mult.)
+  // Calculate avergage hadron multiplicity (= fAvg_had x charged hadron mult. default is 1.5)
+
 
   double W     = utils::kinematics::W(interaction);
   double avnch = this->AverageChMult(nu_pdg, nuc_pdg, W);
-  double avn   = 1.5*avnch;
+  double avn   = favg_had_mult*avnch;
 
   SLOG("KNOHad", pINFO) 
       << "Average hadronic multiplicity (W=" << W << ") = " << avn;
@@ -478,17 +479,28 @@ void KNOHadronization::LoadConfig(void)
   // Probabilities for producing hadron pairs
 
   //-- pi0 pi0
-  fPpi0 = fConfig->GetDoubleDef(
-             "ProbPi0Pi0", gc->GetDouble("KNO-ProbPi0Pi0")); 
+  fPpi0 = fConfig->GetDoubleDef("ProbPi0Pi0", gc->GetDouble("KNO-ProbPi0Pi0")); 
   //-- pi+ pi-
-  fPpic = fConfig->GetDoubleDef(
-             "ProbPiplusPiminus", gc->GetDouble("KNO-ProbPiplusPiminus")); 
+  fPpic = fConfig->GetDoubleDef("ProbPiplusPiminus", gc->GetDouble("KNO-ProbPiplusPiminus")); 
   //-- K+  K-
-  fPKc  = fConfig->GetDoubleDef(
-             "ProbKplusKminus", gc->GetDouble("KNO-ProbKplusKminus")); 
+  fPKc  = fConfig->GetDoubleDef("ProbKplusKminus", gc->GetDouble("KNO-ProbKplusKminus")); 
   //-- K0 K0bar
-  fPK0  = fConfig->GetDoubleDef(
-             "ProbK0K0bar", gc->GetDouble("KNO-ProbK0K0bar")); 
+  fPK0  = fConfig->GetDoubleDef("ProbK0K0bar", gc->GetDouble("KNO-ProbK0K0bar")); 
+
+  //Check that the sum of these probabilities makes sense. If it doesn't, fix it for the user. 
+  double sum_of_probs = fPpi0 + fPpic + fPKc + fPK0 ; 
+  if (sum_of_probs !=1.) {
+    fPpi0=fPpi0/sum_of_probs;
+    fPpic=fPpic/sum_of_probs;
+    fPKc=fPKc/sum_of_probs;
+    fPK0=fPK0/sum_of_probs;
+     LOG("KNOHad", pWARN) 
+       << "Sum of Particle Pair Probabilities are not Equal to ONE.  Renormalizing parameters to ....."<<
+       "KNO-ProbPi0Pi0: "        <<fPpi0<<
+       "KNO-ProbPiplusPiminus: " <<fPpic<<
+       "KNO-ProbKplusKminus: "   <<fPKc<<
+       "KNO-ProbK0K0bar: "       <<fPK0<<"  ";
+  }
 
   // Decay unstable particles now or leave it for later? Which decayer to use?
   fDecayer = 0;
@@ -534,6 +546,25 @@ void KNOHadronization::LoadConfig(void)
   fBvn  = fConfig->GetDoubleDef("Beta-vn",   gc->GetDouble("KNO-Beta-vn") ); 
   fBvbp = fConfig->GetDoubleDef("Beta-vbp",  gc->GetDouble("KNO-Beta-vbp")); 
   fBvbn = fConfig->GetDoubleDef("Beta-vbn",  gc->GetDouble("KNO-Beta-vbn"));
+  //
+  favg_had_mult      = fConfig->GetDoubleDef("favg_had_mult",      gc->GetDouble("KNO-AvgHad-Mult") );
+  fbary_vn_mult_e2   = fConfig->GetDoubleDef("fbary_vn_mult_e2",   gc->GetDouble("KNO-ProbP_Baryon_vn_mult_e2"));
+  fbary_vbp_mult_e2  = fConfig->GetDoubleDef("fbary_vbp_mult_e2",  gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_e2"));
+  fbary_vp_mult_gt2  = fConfig->GetDoubleDef("fbary_vp_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vp_mult_gt2"));
+  fbary_vn_mult_gt2  = fConfig->GetDoubleDef("fbary_vn_mult_gt2",  gc->GetDouble("KNO-ProbP_Baryon_vn_mult_gt2"));
+  fbary_vbp_mult_gt2 = fConfig->GetDoubleDef("fbary_vbp_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbp_mult_gt2"));
+  fbary_vbn_mult_gt2 = fConfig->GetDoubleDef("fbary_vbn_mult_gt2", gc->GetDouble("KNO-ProbP_Baryon_vbn_mult_gt2"));
+
+  //Properly Rescale these options, so that you don't end up with greater than Unity! 
+  if( fbary_vn_mult_e2   > 1.)  fbary_vn_mult_e2   = 1.;
+  if( fbary_vbp_mult_e2  > 1.)  fbary_vbp_mult_e2  = 1.;
+  if( fbary_vp_mult_gt2  > 1.)  fbary_vp_mult_gt2  = 1.;
+  if( fbary_vn_mult_gt2  > 1.)  fbary_vn_mult_gt2  = 1.;
+  if( fbary_vbp_mult_gt2 > 1.)  fbary_vbp_mult_gt2 = 1.;
+  if( fbary_vbn_mult_gt2 > 1.)  fbary_vbn_mult_gt2 = 1.;
+
+  
+
 
   // Load parameters determining the prob of producing a strange baryon
   // via associated production
@@ -555,38 +586,22 @@ void KNOHadronization::LoadConfig(void)
   fWcut = fConfig->GetDoubleDef("Wcut",gc->GetDouble("Wcut"));
 
   // Load NEUGEN multiplicity probability scaling parameters Rijk
-  fRvpCCm2  = fConfig->GetDoubleDef(
-                      "R-vp-CC-m2", gc->GetDouble("DIS-HMultWgt-vp-CC-m2"));
-  fRvpCCm3  = fConfig->GetDoubleDef(
-                      "R-vp-CC-m3", gc->GetDouble("DIS-HMultWgt-vp-CC-m3"));
-  fRvpNCm2  = fConfig->GetDoubleDef(
-                      "R-vp-NC-m2", gc->GetDouble("DIS-HMultWgt-vp-NC-m2"));
-  fRvpNCm3  = fConfig->GetDoubleDef(
-                      "R-vp-NC-m3", gc->GetDouble("DIS-HMultWgt-vp-NC-m3"));
-  fRvnCCm2  = fConfig->GetDoubleDef(
-                      "R-vn-CC-m2", gc->GetDouble("DIS-HMultWgt-vn-CC-m2"));
-  fRvnCCm3  = fConfig->GetDoubleDef(
-                      "R-vn-CC-m3", gc->GetDouble("DIS-HMultWgt-vn-CC-m3"));
-  fRvnNCm2  = fConfig->GetDoubleDef(
-                      "R-vn-NC-m2", gc->GetDouble("DIS-HMultWgt-vn-NC-m2"));
-  fRvnNCm3  = fConfig->GetDoubleDef(
-                      "R-vn-NC-m3", gc->GetDouble("DIS-HMultWgt-vn-NC-m3"));
-  fRvbpCCm2 = fConfig->GetDoubleDef(
-                     "R-vbp-CC-m2",gc->GetDouble("DIS-HMultWgt-vbp-CC-m2"));
-  fRvbpCCm3 = fConfig->GetDoubleDef(
-                     "R-vbp-CC-m3",gc->GetDouble("DIS-HMultWgt-vbp-CC-m3"));
-  fRvbpNCm2 = fConfig->GetDoubleDef(
-                     "R-vbp-NC-m2",gc->GetDouble("DIS-HMultWgt-vbp-NC-m2"));
-  fRvbpNCm3 = fConfig->GetDoubleDef(
-                     "R-vbp-NC-m3",gc->GetDouble("DIS-HMultWgt-vbp-NC-m3"));
-  fRvbnCCm2 = fConfig->GetDoubleDef(
-                     "R-vbn-CC-m2",gc->GetDouble("DIS-HMultWgt-vbn-CC-m2"));
-  fRvbnCCm3 = fConfig->GetDoubleDef(
-                     "R-vbn-CC-m3",gc->GetDouble("DIS-HMultWgt-vbn-CC-m3"));
-  fRvbnNCm2 = fConfig->GetDoubleDef(
-                     "R-vbn-NC-m2",gc->GetDouble("DIS-HMultWgt-vbn-NC-m2"));
-  fRvbnNCm3 = fConfig->GetDoubleDef(
-                     "R-vbn-NC-m3",gc->GetDouble("DIS-HMultWgt-vbn-NC-m3"));
+  fRvpCCm2  = fConfig->GetDoubleDef("R-vp-CC-m2", gc->GetDouble("DIS-HMultWgt-vp-CC-m2"));
+  fRvpCCm3  = fConfig->GetDoubleDef("R-vp-CC-m3", gc->GetDouble("DIS-HMultWgt-vp-CC-m3"));
+  fRvpNCm2  = fConfig->GetDoubleDef("R-vp-NC-m2", gc->GetDouble("DIS-HMultWgt-vp-NC-m2"));
+  fRvpNCm3  = fConfig->GetDoubleDef("R-vp-NC-m3", gc->GetDouble("DIS-HMultWgt-vp-NC-m3"));
+  fRvnCCm2  = fConfig->GetDoubleDef("R-vn-CC-m2", gc->GetDouble("DIS-HMultWgt-vn-CC-m2"));
+  fRvnCCm3  = fConfig->GetDoubleDef("R-vn-CC-m3", gc->GetDouble("DIS-HMultWgt-vn-CC-m3"));
+  fRvnNCm2  = fConfig->GetDoubleDef("R-vn-NC-m2", gc->GetDouble("DIS-HMultWgt-vn-NC-m2"));
+  fRvnNCm3  = fConfig->GetDoubleDef("R-vn-NC-m3", gc->GetDouble("DIS-HMultWgt-vn-NC-m3"));
+  fRvbpCCm2 = fConfig->GetDoubleDef("R-vbp-CC-m2",gc->GetDouble("DIS-HMultWgt-vbp-CC-m2"));
+  fRvbpCCm3 = fConfig->GetDoubleDef("R-vbp-CC-m3",gc->GetDouble("DIS-HMultWgt-vbp-CC-m3"));
+  fRvbpNCm2 = fConfig->GetDoubleDef("R-vbp-NC-m2",gc->GetDouble("DIS-HMultWgt-vbp-NC-m2"));
+  fRvbpNCm3 = fConfig->GetDoubleDef("R-vbp-NC-m3",gc->GetDouble("DIS-HMultWgt-vbp-NC-m3"));
+  fRvbnCCm2 = fConfig->GetDoubleDef("R-vbn-CC-m2",gc->GetDouble("DIS-HMultWgt-vbn-CC-m2"));
+  fRvbnCCm3 = fConfig->GetDoubleDef("R-vbn-CC-m3",gc->GetDouble("DIS-HMultWgt-vbn-CC-m3"));
+  fRvbnNCm2 = fConfig->GetDoubleDef("R-vbn-NC-m2",gc->GetDouble("DIS-HMultWgt-vbn-NC-m2"));
+  fRvbnNCm3 = fConfig->GetDoubleDef("R-vbn-NC-m3",gc->GetDouble("DIS-HMultWgt-vbn-NC-m3"));
 }
 //____________________________________________________________________________
 double KNOHadronization::KNO(int probe_pdg, int nuc_pdg, double z) const
@@ -1327,34 +1342,35 @@ int KNOHadronization::GenerateBaryonPdgCode(
   
   // Available hadronic system charge = 2
   if(maxQ == 2) {
-     //for multiplicity ==2, force it to p
-     if(multiplicity ==2 ) pdgc = kPdgProton;
-     else {
-       if(x < 0.66667) pdgc = kPdgProton;
-     }
+    //for multiplicity ==2, force it to p
+    if(multiplicity ==2 ) 
+      pdgc = kPdgProton;
+    else {
+      if(x < fbary_vp_mult_gt2) pdgc = kPdgProton;
+    }
   }
   // Available hadronic system charge = 1
   if(maxQ == 1) {
      if(multiplicity == 2) {
-        if(x < 0.33333) pdgc = kPdgProton;
+        if(x < fbary_vn_mult_e2) pdgc = kPdgProton;
      } else {
-        if(x < 0.50000) pdgc = kPdgProton;
+        if(x < fbary_vn_mult_gt2) pdgc = kPdgProton;
      }
   }
 
   // Available hadronic system charge = 0
   if(maxQ == 0) {
      if(multiplicity == 2) {
-        if(x < 0.66667) pdgc = kPdgProton;
+        if(x < fbary_vbp_mult_e2) pdgc = kPdgProton;
      } else {
-        if(x < 0.50000) pdgc = kPdgProton;
+        if(x < fbary_vbp_mult_gt2) pdgc = kPdgProton;
      }
   }
   // Available hadronic system charge = -1
   if(maxQ == -1) {
      // for multiplicity == 2, force it to n
      if(multiplicity != 2) {
-        if(x < 0.33333) pdgc = kPdgProton;
+        if(x < fbary_vbn_mult_gt2) pdgc = kPdgProton;
      }
   }
 
