@@ -14,6 +14,8 @@
 namespace genie {
 namespace mc_vs_data {
 
+class ExpData;
+
 class RunConfig
 {
 
@@ -29,6 +31,7 @@ class RunConfig
       std::string          GetCurrentModelName()   const;  
       std::string&         GetCurrentGSampleName() const;
       std::string          GetOutputFormat()       const { return fOutputFormat; }
+      const ExpData*       GetExpData()            const { return fExpData; }
 
    private:
      
@@ -36,6 +39,8 @@ class RunConfig
      //
      CmdLnArgParser* fLineParser;
      GSimFiles*      fGSimFiles;
+     ExpData*        fExpData;
+     
      //
      int             fCurrentModel;
      int             fCurrentGSample;

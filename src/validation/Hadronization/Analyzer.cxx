@@ -60,6 +60,9 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
 // Right now model(genie version) is NOT used anywhere.
 // Need to add it up, like a regression test.
 
+   // reset interaction type to default
+   //
+   fInteractionType = ExpData::kInvalid;
 
    LOG("gvldtest", pNOTICE) 
      << "Analyzing input file " << sample << " for model: " << model;
@@ -111,26 +114,10 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
       return; // in fact, it needs to do more than just a return...
    }
       
-   // Check if exp.data exist
-   //
-/*
-   const std::map< ExpData::Observable, std::vector<std::string> >* ExpDataPtr = fExpData.GetExpDataNames( fInteractionType );
-   if ( !ExpDataPtr ) 
-   {      
-      LOG("gvldtest", pERROR) << " NO EXP.DATA FOUND IN TEST STORAGE FOR INTERACTION TYPE " << fInteractionType;
-      fInteractionType = ExpData::kInvalid;
-      return;
-   }   
-   std::map< ExpData::Observable, std::vector<std::string> >::const_iterator itr = ExpDataPtr->find(ExpData::kChHad_W2);
-   int NDataSets = (itr->second).size();
-   std::cout << " Number of datasets in STORAGE = " << NDataSets << std::endl; 
-*/
-
    int NCounts = 0; // number of plotters for specific observables (size of fGenPlots container)
    
    // clear the plots (gen sample) from previous analysis round (if any)
-   //
-   
+   //  
    if ( !fGenPlots.empty() )
    {
       NCounts = fGenPlots.size();
@@ -175,21 +162,10 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
    {
       fGenPlots[nc]->EndOfEventPlots();
    }
-   
-   // FIXME !!!
-   // I was trying to make this method public and call it from the main
-   // but somehow it segfaults.
-   // Need to figure out why...
-   //
-   DrawResults();
-   
+      
    fin->Close();
    delete fin;
 
-   // reset interaction type to default
-   //
-   fInteractionType = ExpData::kInvalid;
-   
    return;
 
 }
@@ -267,11 +243,11 @@ bool Analyzer::CheckInteractionType( const int NEvt )
 
 }
 
-void Analyzer::DrawResults()
+void Analyzer::DrawResults( const ExpData* dsets )
 {
-   
-   const std::map< ExpData::Observable, std::vector<TGraphErrors*> >* ExpGraphs = fExpData.GetExpDataGraphs( fInteractionType );
-   std::map< ExpData::Observable, std::vector<TGraphErrors*> >::const_iterator itr;
+      
+   const std::map< std::string, std::vector<TGraphErrors*> >* ExpGraphs = dsets->GetExpDataGraphs( fInteractionType );
+   std::map< std::string, std::vector<TGraphErrors*> >::const_iterator itr;
    
    std::stringstream ss;
    ss << fInteractionType;
@@ -288,7 +264,6 @@ void Analyzer::DrawResults()
       plot->SetStats(0);
       plot->Draw("p");
      
-      ExpData::Observable var = fGenPlots[nc]->GetObservable();
       std::string         name = fGenPlots[nc]->GetName();      
 
       std::string output = name + "-" + ss.str() + "." + fOutputFormat.c_str();
@@ -300,7 +275,7 @@ void Analyzer::DrawResults()
 	 continue;
       }
 
-      itr = ExpGraphs->find(var);
+      itr = ExpGraphs->find(name);
       if ( itr == ExpGraphs->end() )
       {
          LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR THIS OBSERVALE " << name; 

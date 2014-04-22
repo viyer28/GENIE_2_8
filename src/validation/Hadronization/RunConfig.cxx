@@ -4,6 +4,8 @@
 #include "Messenger/Messenger.h"
 #include "Utils/StringUtils.h"
 
+#include "ExpData.h"
+
 using namespace genie;
 using namespace genie::mc_vs_data;
 using namespace genie::utils;
@@ -13,17 +15,32 @@ RunConfig::RunConfig( int argc, char ** argv )
 
   fLineParser = new CmdLnArgParser( argc, argv );
   fGSimFiles  = new GSimFiles( false, 10 ); // no chain; max 10 models/versions
+  fExpData    = new ExpData();
 
   fCurrentModel=-1;
   fCurrentGSample=-1; 
   
   // get GENIE inputs
-  if(fLineParser->OptionExists('g')) {
+  if( fLineParser->OptionExists('g') ) 
+  {
      string inputs = fLineParser->ArgAsString('g');
      bool ok = fGSimFiles->LoadFromFile(inputs);
      if(!ok) { 
         LOG("gvldtest", pFATAL) 
           << "Could not read validation program inputs from: " << inputs;
+//        PrintSyntax();
+        exit(1);
+     }
+  }
+
+  if ( fLineParser->OptionExists('d') )
+  {
+     string dsets = fLineParser->ArgAsString('d');
+     bool ok = fExpData->LoadExpData( dsets );
+     if(!ok) 
+     { 
+        LOG("gvldtest", pFATAL) 
+          << "Could not read validation program datasets from: " << dsets;
 //        PrintSyntax();
         exit(1);
      }
@@ -36,7 +53,8 @@ RunConfig::RunConfig( int argc, char ** argv )
   }
   
   fOutputFormat = "gif";
-  if(fLineParser->OptionExists('f')) {
+  if(fLineParser->OptionExists('f')) 
+  {
     fOutputFormat = fLineParser->ArgAsString('f');
   }  
      
@@ -64,7 +82,7 @@ void RunConfig::Next()
    int EndSample = (fGSimFiles->EvtFileNames(fCurrentModel)).size()-1;
    if ( fCurrentGSample == EndSample )
    {
-      // we're at the end of list of generatoed samples for a given model
+      // we're at the end of list of generated samples for a given model
       //
       fCurrentModel++;
       fCurrentGSample = 0;

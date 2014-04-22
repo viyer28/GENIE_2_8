@@ -7,8 +7,6 @@
 
 #include "EVGCore/EventRecord.h"
 
-#include "ExpData.h"
-
 class TH1F;
 // class TProfile;
 
@@ -20,10 +18,9 @@ class GenPlotsBase
 
    public:
     
-      GenPlotsBase() : fObservable(ExpData::kNone), fName(""), fResult(0) {}
+      GenPlotsBase() : fName(""), fResult(0) {}
       virtual ~GenPlotsBase();
        
-      ExpData::Observable GetObservable() const { return fObservable; }
       std::string         GetName() const { return fName; }
       virtual void        Clear();
       virtual void        AnalyzeEvent( const EventRecord& ) = 0;
@@ -33,7 +30,6 @@ class GenPlotsBase
 
    protected:
          
-      ExpData::Observable                     fObservable;
       std::string                             fName;
       TH1F*                                   fResult;              
 

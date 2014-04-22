@@ -5,6 +5,8 @@
 #include <string>
 #include <iostream>
 
+#include "libxml/xmlreader.h"
+
 class TGraph;
 class TGraphErrors;
 
@@ -17,27 +19,34 @@ class ExpData
    public:
    
       enum InteractionType { kInvalid=-1, kNuP=0, kNuN=1, kNubarP=2, kNubarN=3 };
-      enum Observable      { kNone=-1, kChHad_W2=0, kChHad_D_n=1 };
       
       ExpData();
       ~ExpData() {}
       
-      void AddExpData( const InteractionType&, const Observable&, const std::string& );
-      const std::map< Observable, std::vector<std::string> >*    GetExpDataNames( const InteractionType& ) const;
-      const std::map< Observable, std::vector<TGraphErrors*> >*  GetExpDataGraphs( const InteractionType& ) const; 
+      bool LoadExpData( const std::string& );
+            
+      const std::map< std::string, std::vector<std::string> >*    GetExpDataNames( const InteractionType& ) const;
+      const std::map< std::string, std::vector<TGraphErrors*> >*  GetExpDataGraphs( const InteractionType& ) const; 
    
    private:
    
-      void MakeGraph( const InteractionType&, const Observable&, const std::string& );
-      //void          DrawGraph( TGraph* gr, int mstyle, int mcol, double msize=0.8, string opt = "def" );
+      bool ProcessRecord( xmlTextReader* );
+      InteractionType CheckInteractionType( const xmlChar* , const xmlChar* );
+      void AddExpData( const InteractionType&, const std::string& );
+      TGraphErrors* MakeGraph( const InteractionType&, const std::string& ); 
+      // void MakeGraph( const InteractionType&, const Observable&, const std::string& );
       
-      std::string   fExpDataDirPath;
+      std::string     fExpDataDirPath;
+      InteractionType fCurrentIntType;
+      std::string     fCurrentDSLocation;
+      std::string     fCurrentDSReference;
+      TGraphErrors*   fCurrentGraph;
       
       // can this be a generic approach ???
       // so far looks like it works...
       //
-      std::map< InteractionType, std::map< Observable, std::vector<TGraphErrors*> > > fGraphs;
-      std::map< InteractionType, std::map< Observable, std::vector<std::string> > >   fExpDataHolder;
+      std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > > fGraphsTest;
+      std::map< InteractionType, std::map< std::string, std::vector<std::string> > >   fExpDataHolderTest;
       
       // Note (by Marc P.)
       //

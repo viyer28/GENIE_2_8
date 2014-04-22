@@ -20,7 +20,8 @@
              model to be considered in the hadronization benchmark test.
              For info on the XML file format see the GSimFiles class documentation.
 
-\author  Tingjun Yang, Hugh Gallagher, Pauli Kehayias, Costas Andreopoulos 
+\author  Original: Tingjun Yang, Hugh Gallagher, Pauli Kehayias, Costas Andreopoulos
+         Re-engineered: Julia Yarba (FNAL), Gabriel Perdue (FNAL)
 
 \created March 1, 2009
 
@@ -66,6 +67,7 @@ int main(int argc, char ** argv)
      if ( run->IsDone() ) break;
           
      analyzer->Analyze( run->GetCurrentModelName(), run->GetCurrentGSampleName() );
+     analyzer->DrawResults( run->GetExpData() );
   
   } while ( !run->IsDone() );
 
