@@ -68,12 +68,15 @@ RandomGen::RandomGen()
   this->InitRandomGenerators(fCurrSeed);
 
   fInitalized = true;
+
+  // this flag will be true if Instance() function generate the instance
+  fDeleteRndGen = false;
 }
 //____________________________________________________________________________
 RandomGen::~RandomGen()
 {
   fInstance = 0;
-  if(fRandom3) delete fRandom3;
+  if(fRandom3 && fDeleteRndGen) delete fRandom3;
 }
 //____________________________________________________________________________
 RandomGen * RandomGen::Instance()
@@ -83,8 +86,23 @@ RandomGen * RandomGen::Instance()
     cleaner.DummyMethodAndSilentCompiler();
 
     fInstance = new RandomGen;
+
+    // this instance takes responsibility to delete fRandom3.
+    fInstance->SetDeleteTRandom3(true);
   }
   return fInstance;
+}
+//____________________________________________________________________________
+void RandomGen::SetTRandom3(TRandom3 *random)
+{
+  if (fRandom3) delete fRandom3;
+  fRandom3 = random;
+}
+//____________________________________________________________________________
+void RandomGen::AdoptTRandom3(TRandom3 *random)
+{
+  SetTRandom3(random);
+  fDeleteRndGen = true;
 }
 //____________________________________________________________________________
 void RandomGen::SetSeed(long int seed)
