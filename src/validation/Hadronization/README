@@ -3,15 +3,17 @@ WORK IN PROGRESS !!!!!
 
 This is going to serve a mini-guide on validation/Hadronization.
 
-** General note
+** GENERAL NOTE(S)
 
 If using centrally installed Genie, it's safer to stick to v2_8_0d because
 a) It has a bug fix to correct an issue with the Makefile-related scripts
 b) It has all executable binaries in place, including gevgen
 
-** Running interactively
+** HADRONIZATION VALIDATION AS OF GENIE 2.8
 
-*** Generation of Genie samples (input to validation job)
+*** Running interactively
+
+**** Generation of Genie samples (input to validation job)
 
 This recipe is a short-cut extracted from $GENIE/src/production/batch/submit_hadronization_validation_mc_jobs.pl
 
@@ -29,7 +31,7 @@ Note-3: -t==target, and it can be 1000000010 (n) or 1000010010 (p).
 	Presumably, standard PDG id's can also be used (but I haven't tried).
 Note-4: gxsl-vA-v2.8.0.xml can be downloaded from http://www.hepforge.org/archive/genie/data/2.8.0/
 
-*** Running validation
+**** Running validation
 
 To build the validation application $GENIE/src/validation/Hadronization, please type this:
 make
@@ -62,13 +64,15 @@ the application to produce output plots in the form of GIF images.
 If you don't specify this option, the default will a single PS file.
 An eps or root formats are also possible.
 
-** Status of development 
+** STATUS OF DEVELOPMENT 
 
 WORK IN PROGRESS !!!!!!!!!!!!!!!
 
+*** Restructuring - Overview of Components
+
 Currently, the package is under restructuring.
 
-The old classes are HadPlots and HadPlotter are still here.
+The old classes, HadPlots and HadPlotter, are still here.
 
 The new classes are: RunConfig, Analyzer, ExpData, and GenPlots<Base>/<ChHadW2>.
 
@@ -96,6 +100,41 @@ The exp.datasets are currently located in the hierarchy of directories under:
 $GENIE/data/validation//vA/hadronics
 i.e. the location specified in the config is given regards to this general area.
 (there maybe alternative ideas, but at the moment the status is as above)
+
+*** Preliminary instructions for adding/porting analzer/plotter for particular observables
+
+Our corrent design phylosophy on the analysis/plotting components is the following:
+We propose to have a compact base class for an analyzer that will serve mainly as as API,
+and a family of compact analyzers/plotters dedicated to specific physics observables.
+
+Such approach will enhance the modularity and will simplify maintenance of the package.
+
+This approach has been initially prototyped, and is currently represented by the two new classes: 
+-- GenPlotsBase - base class for a analyzer/plotter 
+-- GenPlotsChHadW2 - analyzer to study multiplicity of charged hadrons as a function of W2 
+
+The essential feature of of the GenPlotBase object and all of the derived objects is ** NAME **.
+The name will reflect what physics variable/observable is being studied.
+In the current implementation, this name will need to MATCH the name specified with an experimental 
+dataset or a group of datasets (in the input xml config file). This is how the simulated observable 
+will be matched vs exp.data.
+(There maybe other design ideas down the road, but this is the status as of April 25, 2014).
+
+ GenPlotsChHadW2 implements analysis of charged hadrons multiplicity as a function of W2.
+ Specifically, it sets the analyzer's name to "ChHad_W2" (see also example_exp_data_input.xml
+ for labeling exp.dataset(s))., as well as provide implementation of (purely) virtual methods
+ AnalyzeEvent( const EventRecord& ) and EndOfEventPlots().
+ 
+ Implementation details of GenPlotsChHadW2 is largely influenced and driven by the corresponding
+ portion of the original version of HadPlots (as of Genie v2.8).
+ 
+ Other contents of HadPlots (code releted to specific variables/observables) can be ported by
+ following the pattern of GenPlotsBase and GenPlotsChHadW2.
+ 
+ 
+ 
+
+
 
 
  
