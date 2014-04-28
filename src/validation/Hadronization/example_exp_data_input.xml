@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<exp_data>
+   <interaction projectile="nu" target="proton">
+      <dataset>
+         <path      dir="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vp.dat"/>
+         <reference ref="prd27:p47"/>	
+         <plot>
+            <observable name="ChHad_W2"/>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="0" xup="150"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
+         </plot> 
+      </dataset> 
+      <dataset>
+         <path      dir="/bubble_chambers/charged_hadron_multiplicity/npb181_385_fig1_nch_W.dat"/>
+         <reference ref="npb181:p385"/>	 
+         <plot>
+            <observable name="ChHad_W2"/>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="0" xup="150"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
+         </plot> 
+      </dataset> 
+   </interaction>
+   <interaction projectile="nu" target="neutron">
+      <dataset>
+         <path      dir="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vn.dat"/>
+         <reference ref="prd27:p47"/>	
+         <plot>
+            <observable name="ChHad_W2"/>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="0" xup="150"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
+         </plot> 
+      </dataset> 
+      <dataset>
+         <path      dir="/bubble_chambers/charged_hadron_multiplicity/zpc24_119_vn.dat"/>
+         <reference ref="zpc24:p119"/>	 
+         <plot>
+            <observable name="ChHad_W2"/>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="0" xup="150"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
+         </plot> 
+      </dataset> 
+   </interaction>
+</exp_data>
+

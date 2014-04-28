@@ -22,7 +22,6 @@ GenPlotsChHadW2::GenPlotsChHadW2()
    : GenPlotsBase()
 {
 
-   fObservable = ExpData::kChHad_W2;
    fName = "ChHad_W2";
    
    nw = 14;
