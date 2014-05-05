@@ -21,7 +21,7 @@ class ExpData
       enum InteractionType { kInvalid=-1, kNuP=0, kNuN=1, kNubarP=2, kNubarN=3 };
       
       ExpData();
-      ~ExpData() {}
+      ~ExpData();
       
       bool LoadExpData( const std::string& );
             
@@ -45,8 +45,8 @@ class ExpData
       // can this be a generic approach ???
       // so far looks like it works...
       //
-      std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > > fGraphsTest;
-      std::map< InteractionType, std::map< std::string, std::vector<std::string> > >   fExpDataHolderTest;
+      std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > > fGraphs;
+      std::map< InteractionType, std::map< std::string, std::vector<std::string> > >   fExpDataHolder;
       
       // Note (by Marc P.)
       //

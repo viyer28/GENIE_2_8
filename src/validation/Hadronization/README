@@ -22,7 +22,7 @@ try to execute the following:
 gevgen -n 20000 -e 0.5, 80.0 -p 14 -t 1000000010 -f "1/x" \
        -r <YOUR_RUN_NUMBER> --seed <YOUR_SEED> \
        --cross-sections /path/to/gspl-vA-v2.8.0.xml \
-       -- event-generation-list HadronizationTest
+       --event-generation-list HadronizationTest
 
 Note-1: Obviouosly, YOUR_RUN_NUMBER and YOUR_SEED can be any sensible integerer of your choice.
 Note-2: -p==projectile, and it can be 14 (nu) or -14 (nubar).
@@ -100,6 +100,36 @@ The exp.datasets are currently located in the hierarchy of directories under:
 $GENIE/data/validation//vA/hadronics
 i.e. the location specified in the config is given regards to this general area.
 (there maybe alternative ideas, but at the moment the status is as above)
+
+WARNING-2: In the current implementation MC results will only be displayed if 
+the system finds a corresponding datasets; otherwise skip.
+
+WARNING-2: The above mentioned example configuration contains a very limited list
+of experimental datasets. Addition of other datasets is in progress.
+
+*** Regression Testing
+
+Current machinery allows to process outputs from different models (versions) of Genie.
+Results will be grouped by interaction type (projectile+target) and by observables.
+Results for the same combo projectile+target+observable, obtained from different Genie models,
+will be displyed collectively on the same plot/canvs.
+
+Example Genie input configuration may look like this:
+<genie_simulation_outputs>
+         <model name="GENIE v1">
+                 <evt_file format="ghep"> ./v1/gntp.1.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v1/gntp.2.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v1/gntp.3.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v1/gntp.4.ghep.root </evt_file>
+         </model>
+         <model name="GENIE v2">
+                 <evt_file format="ghep"> ./v2/gntp.1.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v2/gntp.2.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v2/gntp.3.ghep.root </evt_file>
+                 <evt_file format="ghep"> ./v2/gntp.4.ghep.root </evt_file>
+         </model>
+</genie_simulation_outputs>
+
 
 *** Preliminary instructions for adding/porting analzer/plotter for particular observables
 

@@ -26,15 +26,15 @@ class Analyzer
       ~Analyzer();
       
       void SetOutputFormat( const std::string& format ) { fOutputFormat=format; return; }
-      void Analyze( const std::string& model, const std::string& sample );
-      void DrawResults( const ExpData* );
+      void Analyze( const std::string&, const std::string& );
+      void DrawResults( const int, const ExpData* );
    
    private:
    
       // methods 
       //
       bool CheckInteractionType( const int );
-      // void DrawResults();
+      void AddPlots( std::vector<GenPlotsBase*>& );
       
       // data members
       //
@@ -42,8 +42,8 @@ class Analyzer
       int                        fCurrentTarget;
       TTree*                     fEvtTree;
       NtpMCEventRecord*          fMCRec;
-      ExpData::InteractionType   fInteractionType; //interaction type, 0:vp, 1:vn, 2:vbarp, 3:vbarn
-      std::vector<GenPlotsBase*> fGenPlots;
+      ExpData::InteractionType   fInteractionType; //interaction type, 0:v+p, 1:v+n, 2:vbar+p, 3:vbar+n
+      std::map< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > > fGenPlots;
       std::string                fOutputFormat;
 
 };

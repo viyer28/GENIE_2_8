@@ -26,6 +26,7 @@ class RunConfig
          
       void                 Next();
       bool                 IsDone();
+      int                  GetNModels()            const { return fGSimFiles->NModels(); }
       int                  GetCurrentModelId()     const { return fCurrentModel; }
       int                  GetCurrentGSampleId()   const { return fCurrentGSample; }
       std::string          GetCurrentModelName()   const;  
