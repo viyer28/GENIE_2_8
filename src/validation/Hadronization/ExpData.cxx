@@ -44,6 +44,16 @@ ExpData::ExpData()
       
 }
 
+ExpData::~ExpData()
+{
+
+//   for ( InteractionType r=kNuP; r<=kNubarN; r=InteractionType(r+1) )
+//   {
+//   }   
+
+
+}
+
 bool ExpData::LoadExpData( const std::string& dset )
 {
    
@@ -326,8 +336,8 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 // TEST:
 //
 /*
-   std::map< InteractionType, std::map< string, std::vector<std::string> > >::const_iterator i = fExpDataHolderTest.find(fCurrentIntType);
-   if ( i != fExpDataHolderTest.end() )
+   std::map< InteractionType, std::map< string, std::vector<std::string> > >::const_iterator i = fExpDataHolder.find(fCurrentIntType);
+   if ( i != fExpDataHolder.end() )
    {   
       std::map< std::string, std::vector<std::string> >::const_iterator itr = (i->second).find("ChHad_W2");
       int NDataSets = (itr->second).size();
@@ -345,14 +355,14 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 void ExpData::AddExpData( const InteractionType& type, const std::string& var )
 {
 
-   std::map< InteractionType, std::map< std::string, std::vector<std::string> > >::iterator i1 = fExpDataHolderTest.find(type);   
+   std::map< InteractionType, std::map< std::string, std::vector<std::string> > >::iterator i1 = fExpDataHolder.find(type);   
    
    // check if data set(s) exist(s) for this interaction type
    // if not, just add a new element
    //
-   if ( i1 == fExpDataHolderTest.end() )
+   if ( i1 == fExpDataHolder.end() )
    {
-      fExpDataHolderTest[type][var].push_back( fCurrentDSLocation );
+      fExpDataHolder[type][var].push_back( fCurrentDSLocation );
       fCurrentGraph = MakeGraph( type, var );
       return;
    }
@@ -376,7 +386,7 @@ void ExpData::AddExpData( const InteractionType& type, const std::string& var )
    {
       if ( (i2->second)[ie] == fCurrentDSLocation ) 
       {
-         // --> fCurrentGraph = ffExpDataHolderTest[type][var][ie]; // do I need it ???
+         // --> fCurrentGraph = ffExpDataHolder[type][var][ie]; // do I need it ???
 	 return; // don't add this dataset as it's already in !!!
       }
    }
@@ -393,9 +403,9 @@ const std::map< std::string, std::vector<std::string> >* ExpData::GetExpDataName
 
    if ( type == kInvalid ) return NULL;
    
-   std::map< InteractionType, std::map< std::string, std::vector<std::string> > >::const_iterator i = fExpDataHolderTest.find(type);
+   std::map< InteractionType, std::map< std::string, std::vector<std::string> > >::const_iterator i = fExpDataHolder.find(type);
 
-   if ( i != fExpDataHolderTest.end() )
+   if ( i != fExpDataHolder.end() )
    {
       return &(i->second);
    }
@@ -409,9 +419,9 @@ const std::map< std::string, std::vector<TGraphErrors*> >* ExpData::GetExpDataGr
 
    if ( type == kInvalid ) return NULL;
    
-   std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > >::const_iterator i = fGraphsTest.find(type);
+   std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > >::const_iterator i = fGraphs.find(type);
    
-   if ( i != fGraphsTest.end() )
+   if ( i != fGraphs.end() )
    {
       return &(i->second);
    }
@@ -472,8 +482,8 @@ TGraphErrors* ExpData::MakeGraph( const InteractionType& type, const std::string
   
   in.close();
 
-  fGraphsTest[type][var].push_back( new TGraphErrors(vx.size(),&vx[0],&vy[0],&vex[0],&vey[0]) ); 
+  fGraphs[type][var].push_back( new TGraphErrors(vx.size(),&vx[0],&vy[0],&vex[0],&vey[0]) ); 
     
-  return fGraphsTest[type][var].back();
+  return fGraphs[type][var].back();
    
 }

@@ -85,7 +85,9 @@ void RunConfig::Next()
       // we're at the end of list of generated samples for a given model
       //
       fCurrentModel++;
-      fCurrentGSample = 0;
+//      fCurrentGSample = 0;
+      fCurrentGSample = -1; // 0 is causing a skip of the 1st sample in the next model's list
+                            // as an alternative, I can set it at 0 and make it return here;
    }
 
    if ( fCurrentModel == fGSimFiles->NModels() ) 

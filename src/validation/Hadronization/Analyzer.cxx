@@ -36,7 +36,6 @@ Analyzer::Analyzer()
      fInteractionType(ExpData::kInvalid) 
 { 
 
-   fGenPlots.push_back( new GenPlotsChHadW2() );
    fOutputFormat = "gif"; 
 
 }
@@ -44,21 +43,34 @@ Analyzer::Analyzer()
 Analyzer::~Analyzer()
 {
 
-   int NCounts = fGenPlots.size();
-   for ( int nc=0; nc<NCounts; ++nc )
+   std::map< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > >::iterator itr;
+   for ( itr=fGenPlots.begin(); itr!=fGenPlots.end(); ++itr )
    {
-      delete fGenPlots[nc];
-   }
-   fGenPlots.clear();
+      std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >::iterator itr1;
+      for ( itr1=(itr->second).begin(); itr1!=(itr->second).end(); ++itr1 )
+      {      
+         int NCounts1 = (itr1->second).size();
+         for ( int nc1=0; nc1<NCounts1; ++nc1 )
+         {
+            delete (itr1->second)[nc1];
+         }
+	 (itr1->second).clear();
+      }
+   } 
+   
+}
+
+void Analyzer::AddPlots( std::vector<GenPlotsBase*>& plots )
+{
+
+   plots.push_back( new GenPlotsChHadW2() );
+
+   return;
 
 }
 
 void Analyzer::Analyze( const std::string& model, const std::string& sample )
 {
-   
-// FIXME !!!
-// Right now model(genie version) is NOT used anywhere.
-// Need to add it up, like a regression test.
 
    // reset interaction type to default
    //
@@ -114,18 +126,66 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
       return; // in fact, it needs to do more than just a return...
    }
       
-   int NCounts = 0; // number of plotters for specific observables (size of fGenPlots container)
-   
-   // clear the plots (gen sample) from previous analysis round (if any)
-   //  
-   if ( !fGenPlots.empty() )
+   std::map< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > >::iterator itr = fGenPlots.find(model);
+   std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >::iterator itr1;
+   if ( itr == fGenPlots.end() )
    {
-      NCounts = fGenPlots.size();
-      for ( int nc=0; nc<NCounts; ++nc )
+//      // nothing found for this "model"
+//      // add plots
+      std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > tmp;
+      tmp.insert( std::pair< ExpData::InteractionType, std::vector<GenPlotsBase*> >( fInteractionType, std::vector<GenPlotsBase*>() ) );
+      itr1 = tmp.find(fInteractionType);
+      if ( itr1 != tmp.end() ) // alternatively it needs to abort !
       {
-         fGenPlots[nc]->Clear();
+         AddPlots( (itr1->second) );
+      } 
+      fGenPlots.insert( std::pair< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > >( model, tmp ) );
+      // reset the iterators properly once more
+      itr = fGenPlots.find(model);
+      if ( itr == fGenPlots.end() )
+      {
+         LOG("gvldtest", pERROR) << " INVALID attempt to add analyzer(s) for model " << model << " and interaction type " << fInteractionType;
+	 return;
+      }
+      itr1 = (itr->second).find(fInteractionType);
+      if ( itr1 == (itr->second).end() )
+      {
+         LOG("gvldtest", pERROR) << " INVALID attempt to add analyzer(s) for model " << model << " and interaction type " << fInteractionType;
+	 return;
       }
    }
+   else 
+   {
+      // OK, entry for this model (Genie version) is already there;
+      // need to expand
+      std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >& tmp = itr->second;
+      itr1 = tmp.find(fInteractionType);
+      if ( itr1 == tmp.end() )
+      {
+         //... but no entry for this particular interaction type yet
+	 // now add a new (sub)entry
+	 tmp.insert( std::pair< ExpData::InteractionType, std::vector<GenPlotsBase*> >( fInteractionType, std::vector<GenPlotsBase*>() ) );
+         std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >::iterator itr2 = tmp.find(fInteractionType);
+	 if ( itr2 != tmp.end() )
+	 {
+	    AddPlots( (itr2->second) );
+	 }
+      }      
+      itr1 = (itr->second).find(fInteractionType);
+      if ( itr1 == (itr->second).end() )
+      {
+         LOG("gvldtest", pERROR) << " INVALID attempt to add analyzer(s) for model " << model << " and interaction type " << fInteractionType;
+	 return;
+      }
+   }
+   
+// FIXME !!!
+//   if ( !itr1 )
+//   {
+//      // need to abort !!!
+//   }
+
+   int NCounts = 0; // number of plotter per model/inttype
    
    // loop over Genie event records
    //
@@ -147,22 +207,22 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
 	continue;
       }
 
-      NCounts = fGenPlots.size();
+      NCounts = (itr1->second).size();
       for ( int nc=0; nc<NCounts; ++nc )
       {
-         fGenPlots[nc]->AnalyzeEvent( event );
+         (itr1->second)[nc]->AnalyzeEvent( event );
       }
       
    } // end loop over Genie event records
       
    // some of the plots are actually produced as graphs
    //
-   NCounts = fGenPlots.size();
+   NCounts = (itr1->second).size();
    for ( int nc=0; nc<NCounts; ++nc )
    {
-      fGenPlots[nc]->EndOfEventPlots();
+      (itr1->second)[nc]->EndOfEventPlots();
    }
-      
+         
    fin->Close();
    delete fin;
 
@@ -243,60 +303,107 @@ bool Analyzer::CheckInteractionType( const int NEvt )
 
 }
 
-void Analyzer::DrawResults( const ExpData* dsets )
+void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
 {
       
-   const std::map< std::string, std::vector<TGraphErrors*> >* ExpGraphs = dsets->GetExpDataGraphs( fInteractionType );
-   std::map< std::string, std::vector<TGraphErrors*> >::const_iterator itr;
-   
-   std::stringstream ss;
-   ss << fInteractionType;
+// FIXME !!!
+// We need a security mechanism to ensure that the number of samples/variables 
+// specified per model match vs what is specified for another model s!!!
 
-   int NCounts = fGenPlots.size();
+
+   const std::map< std::string, std::vector<TGraphErrors*> >* ExpGraphs; // = dsets->GetExpDataGraphs( fInteractionType );
+
+   std::map< std::string, std::vector<TGraphErrors*> >::const_iterator ditr;
+
+   std::map< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > >::const_iterator gitr;
+   std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >::const_iterator gpitr;
+      
+   int NModels = fGenPlots.size();
    
-   for ( int nc=0; nc<NCounts; ++nc )
+   std::map< ExpData::InteractionType, std::vector<TCanvas*> > cnv;
+   std::map< ExpData::InteractionType, std::vector<TCanvas*> >::iterator icnv;
+   
+   int im = 0;
+   
+   for ( gitr=fGenPlots.begin(); gitr!=fGenPlots.end(); ++gitr ) // loop over models (genie versions)
    {
-      
-      TCanvas cnv("cnv","",500,450); 
-      cnv.SetLogx(); 
-          
-      TH1F* plot = fGenPlots[nc]->GetPlot();
-      plot->SetStats(0);
-      plot->Draw("p");
-     
-      std::string         name = fGenPlots[nc]->GetName();      
-
-      std::string output = name + "-" + ss.str() + "." + fOutputFormat.c_str();
-      
-      if ( !ExpGraphs )
+      ExpData::InteractionType itype = ExpData::kInvalid;
+      const std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >& tmp = (gitr->second);
+      for ( gpitr=tmp.begin(); gpitr!=tmp.end(); ++gpitr )
       {
-         LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR INTERACTION TYPE " << fInteractionType;
-         cnv.Print( output.c_str() );
-	 continue;
-      }
-
-      itr = ExpGraphs->find(name);
-      if ( itr == ExpGraphs->end() )
-      {
-         LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR THIS OBSERVALE " << name; 
-         cnv.Print( output.c_str() );
-	 continue;
-      }
+         itype = gpitr->first;
+	 //
+	 // for the very first model, instiate storage forTCanvas
+	 // while other results for models will be overlaid
+	 //
+         if ( im == 0 ) cnv.insert( std::pair< ExpData::InteractionType, std::vector<TCanvas*> >( itype, std::vector<TCanvas*>() ) );
+         icnv = cnv.find(itype); 
+	 const std::vector<GenPlotsBase*>& plots = gpitr->second;
+	 int NPlots = plots.size();
+	 for ( int npl=0; npl<NPlots; ++npl )
+	 { 
+	   std::string name = plots[npl]->GetName();
+	   if ( im == 0 ) // for the very first model, prepare and store TCanvas
+	   {
+              //
+	      // NOTE: TCanvas name must be unique !!!!!
+	      //
+	      std::stringstream sss;
+              sss << itype;
+	      std::string cname = name + "-" + sss.str();
+	      (icnv->second).push_back( new TCanvas( cname.c_str(), "", 500, 400 ) );
+	   }
+	   TH1F* plot = plots[npl]->GetPlot();
+	   plot->SetStats(0);
+           (icnv->second)[npl]->cd();
+	   if ( im == 0 ) 
+	   {
+	      plot->Draw("p");
+	   }
+	   else
+	   {
+// Here I'm scaling the same plots from Genie 2.8.0
+// just to emulate a "different model" (version)
+// 
+//	      double scale = 1. + 0.1*im;
+//	      plot->Scale( scale );
+//	      plot->SetMarkerColor(kGreen);
+	      plot->Draw("psame");
+	   }
+	   if ( im == NModels-1 )
+	   {
+              std::stringstream ss;
+              ss << itype;
+	      std::string output = name + "-" + ss.str() + "." + fOutputFormat.c_str();
+	      ExpGraphs =  dsets->GetExpDataGraphs( itype );
+	      std::map< std::string, std::vector<TGraphErrors*> >::const_iterator itr;
+              if ( !ExpGraphs )
+              {
+                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR INTERACTION TYPE " << itype;
+	         continue;
+              }
+              itr = ExpGraphs->find(name);
+              if ( itr == ExpGraphs->end() )
+              {
+                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR THIS OBSERVALE " << name; 
+	         continue;
+              }      
+              int NDataSets = (itr->second).size();
+              for ( int nds=0; nds<NDataSets; ++nds )
+              {
+                 TGraphErrors* gr = (itr->second)[nds];
+	         gr->SetMarkerStyle(21+nds);
+	         gr->SetMarkerColor(kBlack);
+	         gr->SetMarkerSize(0.8);
+	         gr->Draw("psame");
+              }            
+              (icnv->second)[npl]->Print(output.c_str());
+	   }
+	 }
+      } // end loop over interaction types within a given model      
+      im++;
+   } // end loop over models
       
-      int NDataSets = (itr->second).size();
-      for ( int nds=0; nds<NDataSets; ++nds )
-      {
-         TGraphErrors* gr = (itr->second)[nds];
-	 gr->SetMarkerStyle(21+nds);
-	 gr->SetMarkerColor(kBlack);
-	 gr->SetMarkerSize(0.8);
-	 gr->Draw("psame");
-      }
-            
-      cnv.Print(output.c_str()); 
-      
-   }
-   
    return;
 
 }

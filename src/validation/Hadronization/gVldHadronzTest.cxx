@@ -67,10 +67,10 @@ int main(int argc, char ** argv)
      if ( run->IsDone() ) break;
           
      analyzer->Analyze( run->GetCurrentModelName(), run->GetCurrentGSampleName() );
-     analyzer->DrawResults( run->GetExpData() );
   
   } while ( !run->IsDone() );
 
+  analyzer->DrawResults( run->GetNModels(), run->GetExpData() );
 
   LOG("gvldtest", pNOTICE) << "Done!";
 
@@ -81,6 +81,6 @@ void PrintSyntax(void)
 {
   LOG("vldtest", pNOTICE)
     << "\n\n" << "Syntax:" << "\n"
-    << " gvld_hadronz_test -g genie_inputs.xml [-f format] \n";
+    << " gvld_hadronz_test -g genie_inputs.xml -d exp_data_input.xml [-f format] \n";
 }
 //____________________________________________________________________________
