@@ -22,11 +22,17 @@
 #include "ExpData.h"
 
 // here there should also be others, for different observables...
-#include "GenPlotsChHadW2.h"
+#include "ChHadW2.h"
+#include "NegChHadD.h"
+#include "ChHadDoverMultW2.h"
+#include "Pi0W2.h"
+#include "Pi0D.h"
 
 #include "TH1F.h"
 #include "TGraphErrors.h"
 #include "TCanvas.h"
+
+#include "CommonCalc.h"
 
 using namespace genie;
 using namespace genie::mc_vs_data;
@@ -63,7 +69,11 @@ Analyzer::~Analyzer()
 void Analyzer::AddPlots( std::vector<GenPlotsBase*>& plots )
 {
 
-   plots.push_back( new GenPlotsChHadW2() );
+   plots.push_back( new ChHadW2() );
+   plots.push_back( new NegChHadD() );
+   plots.push_back( new ChHadDoverMultW2() );
+   plots.push_back( new Pi0W2() );
+   plots.push_back( new Pi0D() );
 
    return;
 
@@ -71,10 +81,14 @@ void Analyzer::AddPlots( std::vector<GenPlotsBase*>& plots )
 
 void Analyzer::Analyze( const std::string& model, const std::string& sample )
 {
-
+   
    // reset interaction type to default
    //
    fInteractionType = ExpData::kInvalid;
+   
+   // clear out common-use arrays
+   //
+   CommonCalc::GetInstance()->Clear();
 
    LOG("gvldtest", pNOTICE) 
      << "Analyzing input file " << sample << " for model: " << model;
@@ -206,6 +220,8 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
 	fMCRec->Clear();
 	continue;
       }
+      
+      CommonCalc::GetInstance()->ResetForNextEvent();
 
       NCounts = (itr1->second).size();
       for ( int nc=0; nc<NCounts; ++nc )
@@ -220,7 +236,7 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
    NCounts = (itr1->second).size();
    for ( int nc=0; nc<NCounts; ++nc )
    {
-      (itr1->second)[nc]->EndOfEventPlots();
+      (itr1->second)[nc]->EndOfEventLoopPlots();
    }
          
    fin->Close();
@@ -311,12 +327,14 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
 // specified per model match vs what is specified for another model s!!!
 
 
-   const std::map< std::string, std::vector<TGraphErrors*> >* ExpGraphs; // = dsets->GetExpDataGraphs( fInteractionType );
+   const std::map< std::string, std::vector<ExpGraph*> >* ExpGraphs; // = dsets->GetExpDataGraphs( fInteractionType );
 
-   std::map< std::string, std::vector<TGraphErrors*> >::const_iterator ditr;
+   std::map< std::string, std::vector<ExpGraph*> >::const_iterator ditr;
 
    std::map< std::string, std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> > >::const_iterator gitr;
    std::map< ExpData::InteractionType, std::vector<GenPlotsBase*> >::const_iterator gpitr;
+
+   std::map< std::string, std::vector<ExpGraph*> >::const_iterator itr; // iterator over exp.data/graphs
       
    int NModels = fGenPlots.size();
    
@@ -333,7 +351,7 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
       {
          itype = gpitr->first;
 	 //
-	 // for the very first model, instiate storage forTCanvas
+	 // for the very first model, instiate storage for TCanvas
 	 // while other results for models will be overlaid
 	 //
          if ( im == 0 ) cnv.insert( std::pair< ExpData::InteractionType, std::vector<TCanvas*> >( itype, std::vector<TCanvas*>() ) );
@@ -358,6 +376,30 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
            (icnv->second)[npl]->cd();
 	   if ( im == 0 ) 
 	   {
+	      
+	      ExpGraphs =  dsets->GetExpDataGraphs( itype );
+              if ( !ExpGraphs )
+              {
+                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR INTERACTION TYPE " << itype;
+	         continue;
+              }
+              itr = ExpGraphs->find(name);
+              if ( itr == ExpGraphs->end() )
+              {
+                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR THIS OBSERVABLE " << name; 
+	         continue;
+              }      	      
+              
+	      ExpGraph* egr = (itr->second)[0];
+	      if ( egr->GetXLog() ) (icnv->second)[npl]->SetLogx();
+	      if ( egr->GetYLog() ) (icnv->second)[npl]->SetLogy();
+	      	      
+              TGraphErrors* gr = egr->GetGraph();
+	      
+	      plot->GetXaxis()->SetRangeUser( gr->GetXaxis()->GetXmin(), gr->GetXaxis()->GetXmax() );
+	      plot->GetYaxis()->SetRangeUser( gr->GetYaxis()->GetXmin(), gr->GetYaxis()->GetXmax() );
+	      plot->GetXaxis()->SetTitle( gr->GetXaxis()->GetTitle() );
+	      plot->GetYaxis()->SetTitle( gr->GetYaxis()->GetTitle() );
 	      plot->Draw("p");
 	   }
 	   else
@@ -375,23 +417,10 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
               std::stringstream ss;
               ss << itype;
 	      std::string output = name + "-" + ss.str() + "." + fOutputFormat.c_str();
-	      ExpGraphs =  dsets->GetExpDataGraphs( itype );
-	      std::map< std::string, std::vector<TGraphErrors*> >::const_iterator itr;
-              if ( !ExpGraphs )
-              {
-                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR INTERACTION TYPE " << itype;
-	         continue;
-              }
-              itr = ExpGraphs->find(name);
-              if ( itr == ExpGraphs->end() )
-              {
-                 LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR THIS OBSERVALE " << name; 
-	         continue;
-              }      
               int NDataSets = (itr->second).size();
               for ( int nds=0; nds<NDataSets; ++nds )
               {
-                 TGraphErrors* gr = (itr->second)[nds];
+                 TGraphErrors* gr = ((itr->second)[nds])->GetGraph();
 	         gr->SetMarkerStyle(21+nds);
 	         gr->SetMarkerColor(kBlack);
 	         gr->SetMarkerSize(0.8);
