@@ -14,7 +14,11 @@ CXXFLAGS += -g
 GENIE_LIBS   = $(shell $(GENIE)/src/scripts/setup/genie-config --libs)
 LIBRARIES   := $(GENIE_LIBS) $(LIBRARIES) $(CERN_LIBRARIES)
 
-HADRONZ_TEST_SOURCES   := RunConfig.cxx  Analyzer.cxx ExpData.cxx GenPlotsBase.cxx GenPlotsChHadW2.cxx gVldHadronzTest.cxx
+HADRONZ_TEST_SOURCES   := RunConfig.cxx  Analyzer.cxx ExpData.cxx 
+HADRONZ_TEST_SOURCES   += GenPlotsBase.cxx CommonCalc.cxx 
+HADRONZ_TEST_SOURCES   += ChHadW2.cxx NegChHadD.cxx ChHadDoverMultW2.cxx 
+HADRONZ_TEST_SOURCES   += Pi0W2.cxx Pi0D.cxx
+HADRONZ_TEST_SOURCES   += gVldHadronzTest.cxx
 HADRONZ_TEST_OBJECTS    = $(addsuffix .$(ObjSuf), $(basename $(HADRONZ_TEST_SOURCES)))
 
 all:    gVldHadronzTest 
