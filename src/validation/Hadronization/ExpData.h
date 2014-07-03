@@ -7,11 +7,69 @@
 
 #include "libxml/xmlreader.h"
 
-class TGraph;
-class TGraphErrors;
+// class TGraph;
+// class TGraphErrors;
+#include "TGraphErrors.h"
 
 namespace genie {
 namespace mc_vs_data {
+
+class ExpGraph 
+{
+
+   public:
+
+      ExpGraph() : fGraph(0), fXLog(false), fYLog(false) {}
+      ExpGraph(Int_t n, const Float_t *x, const Float_t *y, const Float_t *ex=0, const Float_t *ey=0) { fGraph=new TGraphErrors(n,x,y,ex,ey); 
+                                                                                                        fXLog=false;
+												        fYLog=false; }
+      ExpGraph(Int_t n, const Double_t *x, const Double_t *y, const Double_t *ex=0, const Double_t *ey=0) { fGraph=new TGraphErrors(n,x,y,ex,ey); 
+                                                                                                            fXLog=false;
+												            fYLog=false; }
+      ExpGraph(const ExpGraph& gr ) { fGraph=new TGraphErrors(*(gr.fGraph)); fXLog=gr.fXLog; fYLog=gr.fYLog; }
+      ~ExpGraph() { if ( fGraph ) delete fGraph; }
+
+      void SetXLog( const std::string& xlog ) { if ( xlog == "ON" || xlog == "YES" ) fXLog = true; return; }
+      void SetYLog( const std::string& ylog ) { if ( ylog == "ON" || ylog == "YES" ) fYLog = true; return; }
+   
+      TGraphErrors* GetGraph() { return fGraph; }
+      bool          GetXLog()  const { return fXLog; }
+      bool          GetYLog()  const { return fYLog; } 
+   
+   private:
+   
+      TGraphErrors* fGraph;
+      bool          fXLog;
+      bool          fYLog; 
+
+};
+
+/* JVY: just some thoughts ahead... maybe will update the storage structure later on... although it can mess up on the MC side...
+
+class Observable
+{
+
+   
+   public:
+      
+      Observable() : fName(""), fXLog(false), fYLog(false), fXMin(0.), fXMax(0.), fYMin(0.), fYMax(0.) {}
+      Observable( const Observable& var ) { fName=var.fName; fXLog=var.fXLog; fYLog=var.fYLog; 
+                                            fXMin=var.fXMin; fXMax=var.fXMax; 
+					    fYMin=var.fYMin; fYMax=var.fYMax; } 
+      bool operator<( const Observable& var ) { if ( fName < var.fName ) return true; return false; }
+   
+   private:
+   
+      std::string fName;
+      bool        fXLog;
+      bool        fYLog;
+      double      fXMin;
+      double      fXMax;
+      double      fYMin;
+      double      fYMax;
+
+};
+*/
 
 class ExpData
 {
@@ -26,26 +84,26 @@ class ExpData
       bool LoadExpData( const std::string& );
             
       const std::map< std::string, std::vector<std::string> >*    GetExpDataNames( const InteractionType& ) const;
-      const std::map< std::string, std::vector<TGraphErrors*> >*  GetExpDataGraphs( const InteractionType& ) const; 
+      const std::map< std::string, std::vector<ExpGraph*> >*      GetExpDataGraphs( const InteractionType& ) const; 
    
    private:
    
       bool ProcessRecord( xmlTextReader* );
       InteractionType CheckInteractionType( const xmlChar* , const xmlChar* );
       void AddExpData( const InteractionType&, const std::string& );
-      TGraphErrors* MakeGraph( const InteractionType&, const std::string& ); 
-      // void MakeGraph( const InteractionType&, const Observable&, const std::string& );
+      ExpGraph*     MakeGraph( const InteractionType&, const std::string& );
       
       std::string     fExpDataDirPath;
       InteractionType fCurrentIntType;
       std::string     fCurrentDSLocation;
       std::string     fCurrentDSReference;
-      TGraphErrors*   fCurrentGraph;
+      ExpGraph*       fCurrentGraph;
       
       // can this be a generic approach ???
       // so far looks like it works...
       //
-      std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > > fGraphs;
+      std::map< InteractionType, std::map< std::string, std::vector<ExpGraph*> > > fGraphs;
+//      std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > > fGraphs;
       std::map< InteractionType, std::map< std::string, std::vector<std::string> > >   fExpDataHolder;
       
       // Note (by Marc P.)

@@ -59,7 +59,7 @@ int main(int argc, char ** argv)
   RunConfig* run      = new RunConfig( argc, argv );
   Analyzer*   analyzer = new Analyzer();
   analyzer->SetOutputFormat( run->GetOutputFormat() );
-  
+    
   do 
   {
   

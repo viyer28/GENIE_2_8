@@ -23,6 +23,8 @@
 
 #include "ExpData.h"
 
+#include <algorithm>
+
 using namespace genie;
 using namespace genie::mc_vs_data;
 
@@ -94,6 +96,15 @@ bool ExpData::LoadExpData( const std::string& dset )
 	    ret = xmlTextReaderRead(reader);
             name  = xmlTextReaderName     (reader);
             type  = xmlTextReaderNodeType (reader);
+	    //
+	    // end of exp.data input (double check/protection)
+	    //
+	    if ( xmlStrEqual(name,(const xmlChar*)"exp_data") && type==XML_READER_TYPE_END_ELEMENT )
+	    {
+	       xmlFree(name);
+	       xmlFreeTextReader(reader);
+	       return true;
+	    }
 	 } 
 	 	 
 	 // found another "interaction" record
@@ -174,30 +185,51 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
    }
    
    int ret = xmlTextReaderRead(reader);
-   
    // loop over the interaction record
    // break the loop if at teh end of interaction record
    //
-   while ( ret == 1 ) // keep reading till the end of interaction
+   while ( ret == 1 ) // keep reading til the end of interaction
    {
       name = xmlTextReaderName     (reader);
       type = xmlTextReaderNodeType (reader);
       
-      if ( xmlStrEqual(name,(const xmlChar*)"interaction") && type==XML_READER_TYPE_END_ELEMENT ) break;
-
-      // init the incoming dataset
-      //
-      if ( xmlStrEqual(name, (const xmlChar*)"dataset") && type==XML_READER_TYPE_ELEMENT )
+      if ( xmlStrEqual(name,(const xmlChar*)"interaction") && type==XML_READER_TYPE_END_ELEMENT ) 
       {
-         // reset current dataset location, reference & graph ptr
+//         std::cout << " Found end of interaction-block; breaking the loop" << std::endl;
+	 break;
+      }
+      
+      // init incoming (group of) dataset(s) for an observable
+      //
+      if ( xmlStrEqual(name, (const xmlChar*)"observable") && type==XML_READER_TYPE_ELEMENT )
+      {
+         
+//	 std::cout << " found another observable-block " << std::endl;
+	 
+	 std::string variable;
+	 variable.append( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"name") );
+	 
+	 // reset current dataset location, reference & graph ptr
          //
          fCurrentDSLocation = "";
          fCurrentDSReference = "";
-         fCurrentGraph = 0;      
-         
+         fCurrentGraph = 0; 
+	 
+	 // plots specs 
+	 //    
+	 std::string title = "";
+	 std::string xtitle = "";
+	 std::string ytitle = "";
+	 float x1 = 0.; 
+	 float x2 = 0.;
+	 float y1 = 0.;
+	 float y2 = 0.;
+	 std::string logx = "";
+	 std::string logy = ""; 
+
 	 // cycle over the contents of the incoming dataset
          //
-         while ( !( xmlStrEqual(name,(const xmlChar*)"dataset") && type==XML_READER_TYPE_END_ELEMENT )  )
+         while ( !( xmlStrEqual(name,(const xmlChar*)"observable") && type==XML_READER_TYPE_END_ELEMENT )  )
          {
             ret = xmlTextReaderRead(reader);
 	    if ( ret != 1 )
@@ -207,25 +239,24 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 	    }
 	    xmlChar* name1 = xmlTextReaderName(reader);
 	    int      type1 = xmlTextReaderNodeType(reader);
-	    if ( xmlStrEqual(name1,(const xmlChar*)"path") && type1==XML_READER_TYPE_ELEMENT )
+	    if ( xmlStrEqual(name1,(const xmlChar*)"dataset") && type1==XML_READER_TYPE_ELEMENT )
 	    {
-	       std::string dir;
-	       dir.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"dir") );
+	       std::string dir = "";
+	       dir.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"path") );
 	       fCurrentDSLocation = fExpDataDirPath + dir;
-	    }
-	    if ( xmlStrEqual(name1, (const xmlChar*)"reference") && type1==XML_READER_TYPE_ELEMENT )
-	    {
+	       // FIXME !!!
+	       // Need to store and use the REF !!! 
 	       fCurrentDSReference.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"ref") );
+	       AddExpData( fCurrentIntType, variable );		  
 	    }
-	    if ( xmlStrEqual( name1, (const xmlChar*)"plot") && type1==XML_READER_TYPE_ELEMENT )
+	    if (  xmlStrEqual( name1, (const xmlChar*)"plot") && type1==XML_READER_TYPE_ELEMENT  )
 	    {
-	       xmlChar* title  = 0;
-	       xmlChar* xtitle = 0;
 	       xmlChar* xlow   = 0;
 	       xmlChar* xup    = 0;
-	       xmlChar* ytitle = 0;
 	       xmlChar* ylow   = 0;
 	       xmlChar* yup    = 0;
+	       xmlChar* xlog   = 0;
+	       xmlChar* ylog   = 0;
 	       //
 	       // cycle over plots specs
 	       //
@@ -236,37 +267,32 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 	          {
 	             xmlFree(name);
 		     xmlFree(name1);
-		     xmlFree(title);
-		     xmlFree(xtitle);
 		     xmlFree(xlow);
 		     xmlFree(xup);
-		     xmlFree(ytitle);
 		     xmlFree(ylow);
 		     xmlFree(yup);
 		     return false;
 	          }
 	          xmlChar* name2 = xmlTextReaderName(reader);
-	          if ( xmlStrEqual(name2,(const xmlChar*)"observable") )
-	          { 
-	             std::string variable;
-		     variable.append( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"name") );
-		     AddExpData( fCurrentIntType, variable );		  
-	          }
 	          if ( xmlStrEqual(name2,(const xmlChar*)"title") )
 	          {
-	             title = xmlTextReaderGetAttribute(reader,(const xmlChar*)"name");
+	             title.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"name") );
 	          }
 	          if ( xmlStrEqual(name2,(const xmlChar*)"xaxis") )
 	          {
-	             xtitle   = xmlTextReaderGetAttribute(reader,(const xmlChar*)"name");
+	             xtitle.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"name") );
 	             xlow     = xmlTextReaderGetAttribute(reader,(const xmlChar*)"xlow");
 	             xup      = xmlTextReaderGetAttribute(reader,(const xmlChar*)"xup");
+		     xlog     = xmlTextReaderGetAttribute(reader,(const xmlChar*)"logscale");
+		     if ( xlog ) logx.assign( (const char*)xlog );
 	          }
 	          if ( xmlStrEqual(name2,(const xmlChar*)"yaxis") )
 	          {
-	             ytitle   = xmlTextReaderGetAttribute(reader,(const xmlChar*)"name");
+	             ytitle.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"name") );
 	             ylow     = xmlTextReaderGetAttribute(reader,(const xmlChar*)"ylow");
 	             yup      = xmlTextReaderGetAttribute(reader,(const xmlChar*)"yup");
+		     ylog     = xmlTextReaderGetAttribute(reader,(const xmlChar*)"logscale");
+		     if ( ylog ) logy.assign( (const char*)ylog );
 	          }
 		  // update
 		  name1 = xmlTextReaderName(reader);
@@ -280,74 +306,90 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 	       // check if all the essencials have been set
 	       // otherwise bail out !!!
 	       //
-	       if ( !( title && xtitle && xlow && xup && fCurrentGraph ) )
+	       if ( !( xlow && xup && fCurrentGraph ) )
 	       {
 	          xmlFree(name);
 		  xmlFree(name1);
-		  xmlFree(title);
-		  xmlFree(xtitle);
 		  xmlFree(xlow);
 		  xmlFree(xup);
-		  xmlFree(ytitle);
 		  xmlFree(ylow);
 		  xmlFree(yup);
 	          return false;
 	       }
-	       fCurrentGraph->SetTitle( (const char*)title );
-	       fCurrentGraph->GetXaxis()->SetTitle( (const char*)xtitle );
-	       float x1 = atof( (const char*)xlow );
-	       float x2 = atof( (const char*)xup );
-	       fCurrentGraph->GetXaxis()->SetLimits( x1, x2 );
-	       float y1 = atof( (const char*)ylow );
-	       float y2 = atof( (const char*)yup );
-	       // FIXME: neither approach seems to work as the limits on the 
-	       //        final plots (overlay) aren't as set here... 
-	       //        need to double check details...
-	       fCurrentGraph->GetYaxis()->SetLimits( y1, y2 );
-//	       fCurrentGraph->GetYaxis()->SetRangeUser( y1, y2 );
-	    
-	       xmlFree(title);
-	       xmlFree(xtitle);
+	       x1 = atof( (const char*)xlow );
+	       x2 = atof( (const char*)xup );
+	       y1 = atof( (const char*)ylow );
+	       y2 = atof( (const char*)yup );
+	       
+	       std::transform(logx.begin(), logx.end(),logx.begin(), ::toupper);
+	       std::transform(logy.begin(), logy.end(),logy.begin(), ::toupper);
+	       
 	       xmlFree(xlow);
 	       xmlFree(xup);	    
-	       xmlFree(ytitle);
 	       xmlFree(ylow);
-	       xmlFree(yup);	    
-	    } // end-if for the plot	    
-	    //
+	       xmlFree(yup);
+	       xmlFree(xlog);
+	       xmlFree(ylog);	    
+
+	    } // end-if for the plot
+	    	    
 	    // update name & type to the current position
 	    //
 	    name = xmlTextReaderName(reader);
 	    type = xmlTextReaderNodeType(reader);
 	    
-	    xmlFree(name1);	    
-         } // end cycle over given dataset
-      
-      } // end-if for the start of a new dataset
-      
+	    xmlFree(name1); // free up name1's memory at the end of each iteration in the loop !!!
+	    
+         } // end cycle over the content of observable's data block
+	 
+	 // we're just at the end of an observable-block
+	 // setup (the same) specs to all the plots for a given observable 
+         const std::map< std::string, std::vector<ExpGraph*> >* graphs = GetExpDataGraphs( fCurrentIntType );
+	 std::map< std::string, std::vector<ExpGraph*> >::const_iterator itr1 = graphs->find( variable );
+	 // FIXME !!!
+	 // Need to check if itr1 is NOT at the end !!!
+	 std::vector<ExpGraph*>::const_iterator itr2 = (itr1->second).begin();
+	 for ( ; itr2 != (itr1->second).end(); ++itr2 )
+	 {
+	    ExpGraph* gr = *itr2;
+	    gr->GetGraph()->SetTitle( title.c_str() );
+	    gr->GetGraph()->GetXaxis()->SetTitle( xtitle.c_str() );
+	    gr->GetGraph()->GetYaxis()->SetTitle( ytitle.c_str() );
+	    // Note: somehow SetLimits(...) works better on graphs...
+	    //       while SetRangeUser(...) works better on histos,
+	    //       especially on the y-axis
+	    gr->GetGraph()->GetXaxis()->SetLimits( x1, x2 );
+	    gr->GetGraph()->GetYaxis()->SetLimits( y1, y2 );
+	    gr->SetXLog(logx);
+	    gr->SetYLog(logy);
+	 }	 
+
+      } // end-if for another observable (group of datasets)      
+
       // move to the next tag
       //
       ret = xmlTextReaderRead(reader);
-   
+
    } // loop over valid read-in (ret==1)
-   
+
    xmlFree(name);
 
 // TEST:
 //
-/*
-   std::map< InteractionType, std::map< string, std::vector<std::string> > >::const_iterator i = fExpDataHolder.find(fCurrentIntType);
-   if ( i != fExpDataHolder.end() )
-   {   
-      std::map< std::string, std::vector<std::string> >::const_iterator itr = (i->second).find("ChHad_W2");
-      int NDataSets = (itr->second).size();
-      std::cout << " Number of datasets in STORAGE = " << NDataSets << std::endl; 
-   }
-   else
-   {      
-      LOG("gvldtest", pERROR) << " NO EXP.DATA FOUND IN TEST STORAGE FOR INTERACTION TYPE " << fCurrentIntType;
-   }
-*/
+//
+//   std::map< InteractionType, std::map< string, std::vector<std::string> > >::const_iterator i = fExpDataHolder.find(fCurrentIntType);
+//   if ( i != fExpDataHolder.end() )
+//   {   
+//      std::map< std::string, std::vector<std::string> >::const_iterator itr = (i->second).find("ChHad_W2");
+//      int NDataSets = (itr->second).size();
+//      std::cout << " Number of datasets in STORAGE = " << NDataSets << std::endl; 
+//   }
+//   else
+//   {      
+//      LOG("gvldtest", pERROR) << " NO EXP.DATA FOUND IN TEST STORAGE FOR INTERACTION TYPE " << fCurrentIntType;
+//   }
+//
+
    return true;
 
 }
@@ -414,18 +456,18 @@ const std::map< std::string, std::vector<std::string> >* ExpData::GetExpDataName
 
 }
 
-const std::map< std::string, std::vector<TGraphErrors*> >* ExpData::GetExpDataGraphs( const InteractionType& type ) const
+const std::map< std::string, std::vector<ExpGraph*> >* ExpData::GetExpDataGraphs( const InteractionType& type ) const
 {
 
    if ( type == kInvalid ) return NULL;
    
-   std::map< InteractionType, std::map< std::string, std::vector<TGraphErrors*> > >::const_iterator i = fGraphs.find(type);
+   std::map< InteractionType, std::map< std::string, std::vector<ExpGraph*> > >::const_iterator i = fGraphs.find(type);
    
    if ( i != fGraphs.end() )
    {
       return &(i->second);
    }
-   
+
    return NULL;
 
 }
@@ -448,7 +490,7 @@ ExpData::InteractionType ExpData::CheckInteractionType( const xmlChar* projectil
    
 }
 
-TGraphErrors* ExpData::MakeGraph( const InteractionType& type, const std::string& var ) // std::string& file )
+ExpGraph* ExpData::MakeGraph( const InteractionType& type, const std::string& var ) 
 {
 
   // fragment copied over from the original code, 
@@ -482,7 +524,7 @@ TGraphErrors* ExpData::MakeGraph( const InteractionType& type, const std::string
   
   in.close();
 
-  fGraphs[type][var].push_back( new TGraphErrors(vx.size(),&vx[0],&vy[0],&vex[0],&vey[0]) ); 
+  fGraphs[type][var].push_back( new ExpGraph(vx.size(),&vx[0],&vy[0],&vex[0],&vey[0]) );
     
   return fGraphs[type][var].back();
    

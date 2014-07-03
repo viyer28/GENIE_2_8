@@ -18,19 +18,21 @@ class GenPlotsBase
 
    public:
     
-      GenPlotsBase() : fName(""), fResult(0) {}
+      GenPlotsBase() : fName(""), /* fNW(14), */ fResult(0) {}
       virtual ~GenPlotsBase();
        
       std::string         GetName() const { return fName; }
       virtual void        Clear();
       virtual void        AnalyzeEvent( const EventRecord& ) = 0;
-      virtual void        EndOfEventPlots() = 0;
+      virtual void        EndOfEventLoopPlots() = 0;
       
       TH1F*               GetPlot() { return fResult; }
 
    protected:
          
       std::string                             fName;
+      // int                                     fNW; // = 14 - it's a "mysterious" variable 
+                                                   // that defines the size of many service arrays
       TH1F*                                   fResult;              
 
 };
