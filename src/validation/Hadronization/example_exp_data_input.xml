@@ -1,48 +1,93 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <exp_data>
    <interaction projectile="nu" target="proton">
-      <dataset>
-         <path      dir="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vp.dat"/>
-         <reference ref="prd27:p47"/>	
+      <observable name="ChHad_W2">
+         <dataset path="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vp.dat" ref="prd27:p47"/>
+         <dataset path="/bubble_chambers/charged_hadron_multiplicity/npb181_385_fig1_nch_W.dat" ref="npb181:p385"/>	 
          <plot>
-            <observable name="ChHad_W2"/>
 	    <title name="ch.hadrons mult vs W2"/>
-	    <xaxis name="W2" xlow="0" xup="150"/>
-	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
-         </plot> 
-      </dataset> 
-      <dataset>
-         <path      dir="/bubble_chambers/charged_hadron_multiplicity/npb181_385_fig1_nch_W.dat"/>
-         <reference ref="npb181:p385"/>	 
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="10" logscale="OFF"/>         
+         </plot>
+      </observable>
+      <observable name="NegChHad_D">
+         <dataset path="/bubble_chambers/charged_hadron_dispersion/prd27_47_fig5_D_n_vp.dat" ref="prd27:p47"/>
          <plot>
-            <observable name="ChHad_W2"/>
-	    <title name="ch.hadrons mult vs W2"/>
-	    <xaxis name="W2" xlow="0" xup="150"/>
-	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
-         </plot> 
-      </dataset> 
+	 <title name="neg.ch.hadrons mult vs D"/>
+	 <xaxis name="Neg.ch.hadrons Mult" xlow="0" xup="4"/>
+	 <yaxis name="D-"  ylow="0" yup="2"/> 
+         </plot>
+      </observable>
+      <observable name="ChHad_D_W2">
+         <dataset path="/bubble_chambers/charged_hadron_dispersion/prd27_47_fig5_D_W_vp.dat" ref="prd27:p47"/>
+         <plot>
+            <title name="ch.hadron D/Nch vs W2"/>
+            <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+            <yaxis name="D/Nch"  ylow="0" yup="1"/>    
+         </plot>
+      </observable>
+      <observable name="Pi0_W2">
+         <dataset path="/bubble_chambers/pi0_multiplicity/sn41_963_fig2_vA.dat" ref="sn41:p963"/>
+         <dataset path="/bubble_chambers/pi0_multiplicity/npb223_269_fig8_vp.dat" ref="npb223:p269"/>
+         <dataset path="/bubble_chambers/pi0_multiplicity/zpc40_231_fig13_pi0.dat" ref="zpc40:p231"/>
+         <plot>
+	    <title name="pi0 mult vs W2"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="pi0 multiplicity"  ylow="0" yup="4"/> 
+         </plot>
+      </observable>
+      <observable name="Pi0_D">
+         <dataset path="/bubble_chambers/pi0_dispersion/sn41_963_fig4_vA.dat" ref="sn41:p963"/>
+         <plot>
+            <title name="Dispersion vs pi0 multiplicity"/>
+	    <xaxis name="pi0 mult" xlow="0" xup="3"/>
+	    <yaxis name="pi0 dispersion"  ylow="0" yup="2"/> 
+         </plot>
+      </observable>
    </interaction>
    <interaction projectile="nu" target="neutron">
-      <dataset>
-         <path      dir="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vn.dat"/>
-         <reference ref="prd27:p47"/>	
+      <observable name="ChHad_W2"> 
+         <dataset path="/bubble_chambers/charged_hadron_multiplicity/prd27_47_fig4_vn.dat" ref="prd27:p47"/>
+         <dataset path="/bubble_chambers/charged_hadron_multiplicity/zpc24_119_vn.dat" ref="zpc24:p119"/>
          <plot>
-            <observable name="ChHad_W2"/>
 	    <title name="ch.hadrons mult vs W2"/>
-	    <xaxis name="W2" xlow="0" xup="150"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
 	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
-         </plot> 
-      </dataset> 
-      <dataset>
-         <path      dir="/bubble_chambers/charged_hadron_multiplicity/zpc24_119_vn.dat"/>
-         <reference ref="zpc24:p119"/>	 
+         </plot>
+      </observable>
+      <observable name="NegChHad_D">
+         <dataset path="/bubble_chambers/charged_hadron_dispersion/prd27_47_fig5_D_n_vn.dat" ref="prd27:p47"/>
          <plot>
-            <observable name="ChHad_W2"/>
-	    <title name="ch.hadrons mult vs W2"/>
-	    <xaxis name="W2" xlow="0" xup="150"/>
-	    <yaxis name="ch.hadrons mult" ylow="0" yup="10"/>
-         </plot> 
-      </dataset> 
+	    <title name="neg.ch.hadrons mult vs D"/>
+	    <xaxis name="Neg.ch.hadrons Mult" xlow="0" xup="4"/>
+	    <yaxis name="D-"  ylow="0" yup="2"/> 
+         </plot>
+      </observable>
+      <observable name="ChHad_D_W2">
+         <dataset path="/bubble_chambers/charged_hadron_dispersion/prd27_47_fig5_D_W_vn.dat" ref="prd27:p47"/>
+         <plot>
+	    <title name="ch.hadron D/Nch vs W2"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="D/Nch"  ylow="0" yup="1"/> 
+         </plot>
+      </observable>
+      <observable name="Pi0_W2">
+         <dataset path="/bubble_chambers/pi0_multiplicity/sn41_963_fig2_vA.dat" ref="sn41:p963"/>
+         <dataset path="/bubble_chambers/pi0_multiplicity/npb223_269_fig8_vp.dat" ref="npb223:p269"/>
+         <dataset path="/bubble_chambers/pi0_multiplicity/zpc40_231_fig13_pi0.dat" ref="zpc40:p231"/>
+         <plot>
+	    <title name="pi0 mult vs W2"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="pi0 multiplicity"  ylow="0" yup="4"/> 
+         </plot>
+      </observable>
+      <observable name="Pi0_D">
+      <dataset path="/bubble_chambers/pi0_dispersion/sn41_963_fig4_vA.dat" ref="sn41:p963"/>
+         <plot>
+	    <title name="Dispersion vs pi0 multiplicity"/>
+	    <xaxis name="pi0 mult" xlow="0" xup="3"/>
+	    <yaxis name="pi0 dispersion"  ylow="0" yup="2"/> 
+         </plot>
+      </observable>
    </interaction>
 </exp_data>
-
