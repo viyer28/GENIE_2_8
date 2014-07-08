@@ -8,4 +8,4 @@ src/Conventions/GBuild.h
 src/Conventions/GVersion.h
 src/make/Make.config
 
-
+.syntastic_cpp_config
