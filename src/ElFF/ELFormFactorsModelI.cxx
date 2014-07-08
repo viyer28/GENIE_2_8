@@ -16,7 +16,10 @@
 */
 //____________________________________________________________________________
 
+#include <TMath.h>
 #include "ElFF/ELFormFactorsModelI.h"
+#include "Algorithm/AlgConfigPool.h"
+#include "Interaction/Interaction.h"
 
 using namespace genie;
 
@@ -44,8 +47,21 @@ ELFormFactorsModelI::~ELFormFactorsModelI()
 
 }
 //____________________________________________________________________________
-
-
-
-
-
+void ELFormFactorsModelI::ConfigTransEnh()
+{
+  AlgConfigPool * confp = AlgConfigPool::Instance();
+  Registry * gc = confp->GlobalParameterList();
+  fUseTransEnh= gc->GetBoolDef("UseTransverseEnhancement", false);
+  fTransEnhA= gc->GetDoubleDef("TransEnhMagneticFF_RT_A", 0.0);
+  fTransEnhB= gc->GetDoubleDef("TransEnhMagneticFF_RT_B", 0.0);
+}
+//____________________________________________________________________________
+double ELFormFactorsModelI::GetTransEnhMagFF(double magFF, const Interaction * interaction) const
+{
+  double A = interaction->InitState().Tgt().A();
+  if(A < 12 || !fUseTransEnh)
+    return magFF;
+  double q2 = interaction->Kine().Q2();
+  double rt=1+fTransEnhA*q2*TMath::Exp(-q2/fTransEnhB);
+  return TMath::Sqrt(rt)*magFF;
+}

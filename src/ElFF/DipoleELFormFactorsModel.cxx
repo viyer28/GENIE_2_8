@@ -65,6 +65,7 @@ double DipoleELFormFactorsModel::Gmp(const Interaction * interaction) const
   double gm = fMuP / TMath::Power(1-q2/fMv2, 2);
 
   LOG("ELFormFactors", pDEBUG) << "Gmp(q^2 = " << q2 << ") = " << gm;
+  gm = this->GetTransEnhMagFF(gm,interaction);
   return gm;
 }
 //____________________________________________________________________________
@@ -75,6 +76,7 @@ double DipoleELFormFactorsModel::Gmn(const Interaction * interaction) const
   double gm = fMuN / TMath::Power(1-q2/fMv2, 2);
 
   LOG("ELFormFactors", pDEBUG) << "Gmn(q^2 = " << q2 << ") = " << gm;
+  gm = this->GetTransEnhMagFF(gm, interaction);
   return gm;
 }
 //____________________________________________________________________________
@@ -105,6 +107,7 @@ void DipoleELFormFactorsModel::LoadConfig(void)
   // anomalous magnetic moments
   fMuP = fConfig->GetDoubleDef("MuP", gc->GetDouble("AnomMagnMoment-P"));
   fMuN = fConfig->GetDoubleDef("MuN", gc->GetDouble("AnomMagnMoment-N"));
+  this->ConfigTransEnh();
 }
 //____________________________________________________________________________
 

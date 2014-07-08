@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<alg_conf>
+
+<!--
+Configuration for the Effective Spectral Function model
+
+Configurable Parameters:
+.............................................................................................................
+Name                Type    Optional   Comment                      Default
+.............................................................................................................
+MomentumMax         double   Yes       max p in prob distribution                     1 GeV
+MomentumCutOff      double   Yes       momentum cut off value                         0.65 GeV
+BindingEnergy@Pdg=? double   Yes       effective binding energy for that nucleon      Varies
+f1p1h@Pdg=?         double   Yes       probability for 1p1h recoil                    Varies
+bs@Pdg=?            double   Yes
+bp@Pdg=?            double   Yes
+alpha@Pdg=?         double   Yes
+beta@Pdg=?          double   Yes
+c1@Pdg=?            double   Yes
+c2@Pdg=?            double   Yes
+c3@Pdg=?            double   Yes      parameters for generating momentum              Varies
+                                      distributions. make sure your parameters
+                                      generate only positive distributions up to
+                                      your MomentumCutOff value.  Must specify all
+                                      7 of them for a given nucleus or none will be
+                                      used.
+-->
+
+  <param_set name="Default"> 
+  </param_set>
+
+</alg_conf>

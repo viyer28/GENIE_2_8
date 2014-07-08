@@ -29,7 +29,8 @@ typedef enum ENuclearModel {
 
    kNucmUndefined    = -1, 
    kNucmFermiGas,
-   kNucmSpectralFunc
+   kNucmSpectralFunc,
+   kNucmEffSpectralFunc
 
 } NuclearModel_t; 
   
@@ -39,9 +40,10 @@ class NuclearModel {
 public:
   static const char * AsString(NuclearModel_t nucmod) {
      switch (nucmod) {
-     case kNucmUndefined:     return "Undefined nuclear model";  break;
-     case kNucmFermiGas:      return "Fermi gas model";          break;
-     case kNucmSpectralFunc:  return "Spectral function model";  break;
+     case kNucmUndefined:       return "Undefined nuclear model";  break;
+     case kNucmFermiGas:        return "Fermi gas model";          break;
+     case kNucmSpectralFunc:    return "Spectral function model";  break;
+     case kNucmEffSpectralFunc: return "Effective spectral function model"; break;
      default:                 break;
      }
      return " ";

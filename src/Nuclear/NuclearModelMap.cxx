@@ -61,7 +61,7 @@ bool NuclearModelMap::GenerateNucleon(const Target & target) const
   bool ok = nm->GenerateNucleon(target);
 
   fCurrRemovalEnergy = nm->RemovalEnergy();
-
+  fCurrf1p1h = nm->Getf1p1h();
   TVector3 p = nm->Momentum3();
   fCurrMomentum.SetXYZ(p.Px(), p.Py(), p.Pz());
 
