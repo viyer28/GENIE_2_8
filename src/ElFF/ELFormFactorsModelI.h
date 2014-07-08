@@ -48,6 +48,11 @@ protected:
   ELFormFactorsModelI();
   ELFormFactorsModelI(string name);
   ELFormFactorsModelI(string name, string config);
+  virtual double GetTransEnhMagFF(double magFF, const Interaction * interaction) const;
+  void ConfigTransEnh();
+  double fTransEnhA;
+  double fTransEnhB;
+  bool fUseTransEnh;
 };
 
 }         // genie namespace

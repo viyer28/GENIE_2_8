@@ -34,12 +34,12 @@ Algorithm(name)
 NuclearModelI::NuclearModelI(string name, string config) :
 Algorithm(name, config)
 {
-
+  fCurrf1p1h = 1;
 }
 //____________________________________________________________________________
 NuclearModelI::~NuclearModelI()
 {
-
+  fCurrf1p1h = 1;
 }
 //____________________________________________________________________________
 double NuclearModelI::RemovalEnergy(void) const
@@ -56,5 +56,8 @@ TVector3 NuclearModelI::Momentum3(void) const
 {
   return fCurrMomentum;
 }
-//____________________________________________________________________________
-
+//_____________________________________________________________________________
+double NuclearModelI::Getf1p1h(void) const
+{
+  return fCurrf1p1h;
+}

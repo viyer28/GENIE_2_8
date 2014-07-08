@@ -52,6 +52,7 @@ double BBA05ELFormFactorsModel::Gmp(const Interaction * interaction) const
   double t   = this->tau(interaction);
   double gmp = this->BBA05Fit(t,fGmp);
   gmp *= fMuP;
+  gmp = this->GetTransEnhMagFF(gmp,interaction);
   return gmp;
 }
 //____________________________________________________________________________
@@ -67,6 +68,7 @@ double BBA05ELFormFactorsModel::Gmn(const Interaction * interaction) const
   double t   = this->tau(interaction);
   double gmn = this->BBA05Fit(t,fGmn);
   gmn *= fMuN;
+  gmn = this->GetTransEnhMagFF(gmn,interaction);
   return gmn;
 }
 //____________________________________________________________________________
@@ -120,6 +122,7 @@ void BBA05ELFormFactorsModel::LoadConfig(void)
   //-- anomalous magnetic moments
   fMuP = fConfig->GetDoubleDef("MuP", gc->GetDouble("AnomMagnMoment-P"));
   fMuN = fConfig->GetDoubleDef("MuN", gc->GetDouble("AnomMagnMoment-N"));
+  this->ConfigTransEnh();
 }
 //____________________________________________________________________________
 double BBA05ELFormFactorsModel::BBA05Fit(

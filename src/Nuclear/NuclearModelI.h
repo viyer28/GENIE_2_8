@@ -41,7 +41,7 @@ public:
   virtual double         RemovalEnergy   (void)           const;
   virtual double         Momentum        (void)           const;
   virtual TVector3       Momentum3       (void)           const;
-
+  virtual double         Getf1p1h        (void)           const;
 protected:
   NuclearModelI();
   NuclearModelI(string name);
@@ -49,6 +49,7 @@ protected:
 
   mutable double   fCurrRemovalEnergy;
   mutable TVector3 fCurrMomentum;
+  mutable double fCurrf1p1h;
 
 };
 

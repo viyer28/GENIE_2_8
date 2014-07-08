@@ -80,7 +80,7 @@ void FermiMover::ProcessEventRecord(GHepRecord * evrec) const
   this->KickHitNucleon(evrec);
 
   // check whether to emit a 2nd nucleon due to short range corelations
-  if(fSRCRecoilNucleon) {
+  if(fSRCRecoilNucleon || fEject2p2h) {
        this->Emit2ndNucleonFromSRC(evrec);
   }
 
@@ -130,43 +130,65 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
   // the sruck nucleon to be on the mass-shell or not...
 
   double EN=0;
-
-  if(!fKeepNuclOnMassShell) {
-     //-- compute A,Z for final state nucleus & get its PDG code 
-     int nucleon_pdgc = nucleon->Pdg();
-     bool is_p  = pdg::IsProton(nucleon_pdgc);
-     int Z = (is_p) ? nucleus->Z()-1 : nucleus->Z();
-     int A = nucleus->A() - 1;
-
-     TParticlePDG * fnucleus = 0;
-     int ipdgc = pdg::IonPdgCode(A, Z);
-     fnucleus = PDGLibrary::Instance()->Find(ipdgc);
-     if(!fnucleus) {
-        LOG("FermiMover", pFATAL)
-             << "No particle with [A = " << A << ", Z = " << Z
-                            << ", pdgc = " << ipdgc << "] in PDGLibrary!";
-        exit(1);
-     }
-     //-- compute the energy of the struck (off the mass-shell) nucleus
-
-     double Mf  = fnucleus -> Mass(); // remnant nucleus mass
-     double Mi  = nucleus  -> Mass(); // initial nucleus mass
-
-     EN = Mi - TMath::Sqrt(pF2 + Mf*Mf);
-
-  } else {
-     double MN  = nucleon->Mass();
-     double MN2 = TMath::Power(MN,2);
-     EN = TMath::Sqrt(MN2+pF2);
+  fEject2p2h = false;
+  if(fNuclModel->ModelType(*tgt) == kNucmEffSpectralFunc)
+  {
+    RandomGen * rnd = RandomGen::Instance();
+    double prob = rnd->RndGen().Rndm();
+    double f1p1h = fNuclModel->Getf1p1h();
+    if(prob < f1p1h) //momentum balanced by on shell A-1 nucleus
+    {
+      EN = nucleon->Mass() - w - pF2/(2*(nucleus->Mass()-nucleon->Mass()));
+    }
+    else //momentum balanced by on shell nucleon
+    {
+      TParticlePDG * other_nucleon;
+      if(nucleon->Pdg() == kPdgProton)
+        other_nucleon = PDGLibrary::Instance()->Find(kPdgNeutron);
+      else
+        other_nucleon = PDGLibrary::Instance()->Find(kPdgProton);
+      TParticlePDG * deuteron = PDGLibrary::Instance()->Find(1000010020);
+      EN = deuteron->Mass() - 2*w - TMath::Sqrt(pF2 + other_nucleon->Mass()*other_nucleon->Mass());
+      fEject2p2h = deuteron->PdgCode() != nucleus->Pdg(); //don't eject other nucleon if target is deuterium- need to leave behind a remnant nucleus
+    }
   }
+  else
+  {
+    if(!fKeepNuclOnMassShell) {
+       //-- compute A,Z for final state nucleus & get its PDG code 
+       int nucleon_pdgc = nucleon->Pdg();
+       bool is_p  = pdg::IsProton(nucleon_pdgc);
+       int Z = (is_p) ? nucleus->Z()-1 : nucleus->Z();
+       int A = nucleus->A() - 1;
 
+       TParticlePDG * fnucleus = 0;
+       int ipdgc = pdg::IonPdgCode(A, Z);
+       fnucleus = PDGLibrary::Instance()->Find(ipdgc);
+       if(!fnucleus) {
+          LOG("FermiMover", pFATAL)
+               << "No particle with [A = " << A << ", Z = " << Z
+                              << ", pdgc = " << ipdgc << "] in PDGLibrary!";
+          exit(1);
+       }
+       //-- compute the energy of the struck (off the mass-shell) nucleus
+
+       double Mf  = fnucleus -> Mass(); // remnant nucleus mass
+       double Mi  = nucleus  -> Mass(); // initial nucleus mass
+
+       EN = Mi - TMath::Sqrt(pF2 + Mf*Mf);
+
+    } else {
+       double MN  = nucleon->Mass();
+       double MN2 = TMath::Power(MN,2);
+       EN = TMath::Sqrt(MN2+pF2);
+    }
+  }
   //-- update the struck nucleon 4p at the interaction summary and at
   //   the GHEP record
   p4->SetPx( p3.Px() );
   p4->SetPy( p3.Py() );
   p4->SetPz( p3.Pz() );
-  p4->SetE ( EN      ); 
-
+  p4->SetE ( EN      );
   nucleon->SetMomentum(*p4); // update GHEP value
 
   // Sometimes, for interactions near threshold, Fermi momentum might bring
@@ -214,7 +236,7 @@ void FermiMover::Emit2ndNucleonFromSRC(GHepRecord * evrec) const
   double kF = kft->FindClosestKF(nucleus_pdgc, nucleon_pdgc);
 
   // check whether to emit a nucleon due to short range corelation
-  bool eject = (pn > kF);
+  bool eject = (pn > kF || fEject2p2h);
   if(eject) {
 
      LOG("FermiMover", pDEBUG)
@@ -222,7 +244,10 @@ void FermiMover::Emit2ndNucleonFromSRC(GHepRecord * evrec) const
         << "Ejecting recoil nucleon";
 
     double Pp = (nucleon->Pdg() == kPdgProton) ? 0.05 : 0.95;
-
+    if(fEject2p2h)
+    {
+      Pp = (nucleon->Pdg() == kPdgProton) ? 0.0 : 1.0;  //always balanced by on shell deuteron in EffectiveSF
+    }
     RandomGen * rnd = RandomGen::Instance();
     double prob = rnd->RndGen().Rndm();
     int code = (prob > Pp) ? kPdgNeutron : kPdgProton;

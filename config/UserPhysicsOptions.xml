@@ -251,6 +251,7 @@ STFC, Rutherford Appleton Laboratory
   Options:
    - genie::FGMBodekRitchie/Default
    - genie::SpectralFunc1d/Default
+   - genie::EffectiveSF/Default
   The 'NuclearModel' option defines the default basic model which should work for _any_ nuclei 
   (typically a Fermi Gas model with the Bodek-Ritchie NN corellatin tail). Refinements for specific 
   nuclei are possible, by specifying the 'NuclearModel@Pdg=10LZZZAAAI' option. 
@@ -263,6 +264,12 @@ STFC, Rutherford Appleton Laboratory
 -->
   <param type="bool" name="IsotopesUseSameNuclearModel">  true                           </param>
 
+<!-- transverse enhancement parameters.  Switch on if using EffectiveSF -->
+  <param type="bool" name="UseTransverseEnhancement">  false </param>
+  <param type="double" name="TransEnhMagneticFF_RT_A"> 5.19  </param>
+  <param type="double" name="TransEnhMagneticFF_RT_B"> 0.376 </param>
+  <param type="double" name="TransEnhf1p1hMod">        1.23  </param>
+  
  <!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Parameters related with GENIE's Fermi Gas (RFG) model implementation  
