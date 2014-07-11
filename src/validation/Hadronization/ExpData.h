@@ -76,7 +76,18 @@ class ExpData
    
    public:
    
-      enum InteractionType { kInvalid=-1, kNuP=0, kNuN=1, kNubarP=2, kNubarN=3 };
+      // FIXME !!!
+      //
+      // At present, we treat CHORUS target (composite/mix) as a special case.
+      // We assume that it's an exception, and there wont be any other dataset
+      // of that kind in the near future.
+      // This is not an ideal solution.However, implementing a machinery 
+      // to identify and store a composite target info is a complex task,
+      // and it'll require a justification before investing any manpower.
+      // Besides, GENIE output does NOT record this kind of mata-data either.
+      //
+      enum InteractionType { kInvalid=-1, kNuP=0,    kNuN=1,    kNuIon=2,    kNuCHORUS=3,
+                                          kNubarP=4, kNubarN=5, kNubarIon=6, kNubarCHORUS=7 };
       
       ExpData();
       ~ExpData();
