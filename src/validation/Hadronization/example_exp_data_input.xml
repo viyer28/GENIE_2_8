@@ -90,4 +90,24 @@
          </plot>
       </observable>
    </interaction>
+   <interaction projectile="nu" target="CHORUS">
+      <observable name="ChHad_W2"> 
+         <dataset path="./epjc51_775_nch_W2_nu.dat" ref="epjc51:p775"/>
+         <plot>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="20"/>
+         </plot>
+      </observable>
+   </interaction>
+   <interaction projectile="nubar" target="CHORUS">
+      <observable name="ChHad_W2"> 
+         <dataset path="./epjc51_775_nch_W2_nubar.dat" ref="epjc51:p775"/>
+         <plot>
+	    <title name="ch.hadrons mult vs W2"/>
+	    <xaxis name="W2" xlow="1" xup="200" logscale="ON"/>
+	    <yaxis name="ch.hadrons mult" ylow="0" yup="20"/>
+         </plot>
+      </observable>
+   </interaction>
 </exp_data>

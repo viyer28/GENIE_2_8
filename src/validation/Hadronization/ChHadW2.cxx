@@ -72,7 +72,8 @@ void ChHadW2::AnalyzeEvent( const EventRecord& event )
 // The flag gets reset at the end of running the last histo module
 // (also internal machinery, nothing for a user to worry about).
 //
-   CommonCalc::GetInstance()->AnalyzeEvent( event );
+   CommonCalc* calc = CommonCalc::GetInstance();
+   calc->AnalyzeEvent( event );
    
    int ncharged = 0;
    double weight = CommonCalc::GetInstance()->GetWeight(); // if it's just 1., why would one need it ???
@@ -87,10 +88,10 @@ void ChHadW2::AnalyzeEvent( const EventRecord& event )
       }     
    }
 
-   int ipos = CommonCalc::GetInstance()->GetCurrentW2Bin();
+   int ipos = calc->GetCurrentW2Bin();
    if (ipos==-1) return; //out of the energy range
 
-   aW2[ipos] += weight*CommonCalc::GetInstance()->GetCurrentW2();
+   aW2[ipos] += weight*calc->GetCurrentW2();
    nch[ipos] += weight*(ncharged);
    
    return;

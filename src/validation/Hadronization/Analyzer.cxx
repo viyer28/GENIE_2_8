@@ -17,6 +17,9 @@
 #include "Messenger/Messenger.h"
 #include "PDG/PDGCodes.h"
 
+#include "Interaction/Interaction.h"
+#include "Interaction/Target.h"
+
 #include "Analyzer.h"
 
 #include "ExpData.h"
@@ -85,6 +88,8 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
    // reset interaction type to default
    //
    fInteractionType = ExpData::kInvalid;
+   fCurrentBeam = -1;
+   fCurrentTarget = -1;
    
    // clear out common-use arrays
    //
@@ -246,6 +251,25 @@ void Analyzer::Analyze( const std::string& model, const std::string& sample )
 
 }
 
+/*
+This method relies on the standard PDG coding, including for ions:
+PDG2006 convention: 10LZZZAAAI
+
+In Genie, PDG codes for nuclear targets can be computed using pdg::IonPdgCode(A,Z)
+There're also convenient methods: 
+genie::pdg::IonPdgCodeToZ(int ion_pdgc)
+genie::pdg::IonPdgCodeToA(int ion_pdgc)
+
+Names/codes for some commonly used nuclear PDG codes:
+const int kPdgTgtFreeP     = 1000010010;
+const int kPdgTgtFreeN     = 1000000010;
+const int kPdgTgtDeuterium = 1000010020;
+const int kPdgTgtC12       = 1000060120;
+const int kPdgTgtO16       = 1000080160;
+const int kPdgTgtFe56      = 1000260560;
+
+*/
+
 bool Analyzer::CheckInteractionType( const int NEvt ) 
 {
 
@@ -270,22 +294,42 @@ bool Analyzer::CheckInteractionType( const int NEvt )
 	continue;
       }
 
-      // input particles and primary (???) lepton
+      // incident particle ("beam/projectile" neutrino)
       //
       GHepParticle* probe = event.Probe();
       assert(probe);
-      GHepParticle* target = event.Particle(1); 
+      
+      // Original implementation: in fact, this is a crude assumption that the target is at ipos=1
+      //
+      // GHepParticle* target = event.Particle(1);
+      //
+      // A cleaner way to do is as follows.
+      // However, one needs to remember that Particle(1) is likely return the PDG 
+      // of the nucleon (kPdgProton or kPdgNeutron), even if the target is kPdgTgtFreeP 
+      // or kPdgTgtFreeN, while Target will keep it as originally specified. 
+      //
+      Interaction* interaction = event.Summary();
+      Target* target = (interaction->InitState()).TgtPtr();       
       assert(target);
-
+      
       if (probe->Pdg() == kPdgNuMu)
       {
-	    if      (target->Pdg() == kPdgProton ) { type = ExpData::kNuP; }
-	    else if (target->Pdg() == kPdgNeutron) { type = ExpData::kNuN; }
+//	    if      ( target->Pdg() == kPdgProton  ) { type = ExpData::kNuP; }
+//	    else if ( target->Pdg() == kPdgNeutron ) { type = ExpData::kNuN; }
+//	    else if ( target->Pdg() > 1000000000 && target->Pdg() < 2000000000 ) { type = ExpData::kNuIon; }
+      
+         if      ( target->Z() == 1 && target->A() == 1 ) { type = ExpData::kNuP; }
+	 else if ( target->Z() == 0 && target->A() == 1 ) { type = ExpData::kNuN; }
+	 else if ( target->Z() > 1 && target->A() > 1 )   { type = ExpData::kNuIon; }
       }
       else if (probe->Pdg() == kPdgAntiNuMu)
       {
-	    if      (target->Pdg() == kPdgProton ) { type = ExpData::kNubarP; }
-	    else if (target->Pdg() == kPdgNeutron) { type = ExpData::kNubarN; }
+//	    if      (target->Pdg() == kPdgProton ) { type = ExpData::kNubarP; }
+//	    else if (target->Pdg() == kPdgNeutron) { type = ExpData::kNubarN; }
+//	    else if ( target->Pdg() > 1000000000 && target->Pdg() < 2000000000 ) { type = ExpData::kNuIon; }
+         if      ( target->Z() == 1 && target->A() == 1 ) { type = ExpData::kNubarP; }
+	 else if ( target->Z() == 0 && target->A() == 1 ) { type = ExpData::kNubarN; }
+	 else if ( target->Z() > 1 && target->A() > 1 )   { type = ExpData::kNubarIon; }
       }
       if ( type < 0 )
       {
@@ -294,6 +338,12 @@ bool Analyzer::CheckInteractionType( const int NEvt )
            << " target = " << target->Pdg();
 	 return false;
       }
+      
+//      if ( fCurrentTarget > -1 && fCurrentTarget != target->Pdg() )
+//      {
+//         std::cout << " Different type of TARGET " << fCurrentTarget << " --> " << target->Pdg() << std::endl;
+//      }
+      
       if ( fInteractionType < 0 )
       {
          
@@ -303,16 +353,50 @@ bool Analyzer::CheckInteractionType( const int NEvt )
          //
          fCurrentBeam   = probe->Pdg();
          fCurrentTarget = target->Pdg();
+	 continue;
       }
       else
       {
-         if ( type != fInteractionType )
+         
+	 // NOTE (JVY): We assume that CHORUS case (composite/mix target) is an exception.
+	 //             The solution isn't ideal or scalable, but we'll leave with it for now.
+	 //             Also, the implementation is somewhat affected by the fact that GENIE
+	 //             does NOT record to the output any meta-data that would contain info
+	 //             on a composite target. GENIE's output event only stores the actual
+	 //             nucleus that was hit (and also the nucleon from it).
+	 
+	 if ( fInteractionType == ExpData::kNuCHORUS || fInteractionType == ExpData::kNubarCHORUS )
+	 {
+	    // return true;
+	    continue;
+	 }
+	 
+	 
+	 if ( type == ExpData::kNuIon || type == ExpData::kNubarIon )
+	 {
+	    if ( fCurrentTarget != target->Pdg() )
+	    {
+               if ( probe->Pdg() == kPdgNuMu )
+	       {
+	          fInteractionType = ExpData::kNuCHORUS;
+	       }
+	       else if ( probe->Pdg() == kPdgAntiNuMu )
+	       {
+	          fInteractionType = ExpData::kNubarCHORUS;
+	       }
+	       // return true;
+	       continue;
+	    }
+	 }
+	 	 
+	 if ( type != fInteractionType )
 	 {
 	    LOG("gvldtest", pERROR) 
                << "Interaction type is inconsistent with earlier settings. Abort this sample." ;
 	    return false;
 	 }               
       }
+     
    }
    
    return true;
