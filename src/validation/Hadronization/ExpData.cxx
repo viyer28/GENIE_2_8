@@ -243,7 +243,18 @@ bool ExpData::ProcessRecord( xmlTextReader* reader )
 	    {
 	       std::string dir = "";
 	       dir.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"path") );
-	       fCurrentDSLocation = fExpDataDirPath + dir;
+	       // FIXME !!!
+	       // need to implement a bit cleaner, make sure "./" or "../" is in the 0-pos !!!	       
+	       if ( dir.find("./") == std::string::npos && dir.find("../") == std::string::npos )
+	       {
+	          // "global" location in the $GENIE/... area
+		  fCurrentDSLocation = fExpDataDirPath + dir;
+	       }
+	       else 
+	       {
+	          // "local" datasets
+		  fCurrentDSLocation = dir ;
+	       }
 	       // FIXME !!!
 	       // Need to store and use the REF !!! 
 	       fCurrentDSReference.assign( (const char*)xmlTextReaderGetAttribute(reader,(const xmlChar*)"ref") );
@@ -472,18 +483,49 @@ const std::map< std::string, std::vector<ExpGraph*> >* ExpData::GetExpDataGraphs
 
 }
 
+bool ExpData::Exists( const InteractionType& type, const std::string& var ) const
+{
+
+   if ( type == kInvalid ) return false;
+   
+   std::map< InteractionType, std::map< std::string, std::vector<ExpGraph*> > >::const_iterator i = fGraphs.find(type);
+   
+   if ( i != fGraphs.end() )
+   {
+      
+      std::map< std::string, std::vector<ExpGraph*> >::const_iterator ii = (i->second).find(var); 
+      if ( ii != (i->second).end() ) return true;
+   }
+      
+   return false;
+
+}
+
+
 ExpData::InteractionType ExpData::CheckInteractionType( const xmlChar* projectile, const xmlChar* target )
 {
    
    if ( xmlStrEqual( projectile, (const xmlChar*)"nu" ) )
    {
-      if      ( xmlStrEqual( target, (const xmlChar*)"proton" ) )  { fCurrentIntType = ExpData::kNuP; }
-      else if ( xmlStrEqual( target, (const xmlChar*)"neutron" ) ) { fCurrentIntType = ExpData::kNuN; }
+      if      ( xmlStrEqual( target, (const xmlChar*)"proton" ) )    { fCurrentIntType = ExpData::kNuP; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"neutron" ) )   { fCurrentIntType = ExpData::kNuN; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"CHORUS" ) ) { fCurrentIntType = ExpData::kNuCHORUS; }
+      // FIXME!!! 
+      // tmp hack...
+      else if ( xmlStrEqual( target, (const xmlChar*)"C12" ) )       { fCurrentIntType = ExpData::kNuIon; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"O16" ) )       { fCurrentIntType = ExpData::kNuIon; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"Fe56" ) )      { fCurrentIntType = ExpData::kNuIon; }
    }
    else if ( xmlStrEqual( projectile, (const xmlChar*)"nubar" ) )
    {
-      if      ( xmlStrEqual( target, (const xmlChar*)"proton" ) )  { fCurrentIntType = ExpData::kNubarP; }
-      else if ( xmlStrEqual( target, (const xmlChar*)"neutron" ) ) { fCurrentIntType = ExpData::kNubarN; }
+      if      ( xmlStrEqual( target, (const xmlChar*)"proton" ) )    { fCurrentIntType = ExpData::kNubarP; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"neutron" ) )   { fCurrentIntType = ExpData::kNubarN; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"CHORUS" ) ) { fCurrentIntType = ExpData::kNubarCHORUS; }
+      // FIXME!!! 
+      // tmp hack...
+      else if ( xmlStrEqual( target, (const xmlChar*)"C12" ) )       { fCurrentIntType = ExpData::kNubarIon; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"O16" ) )       { fCurrentIntType = ExpData::kNubarIon; }
+      else if ( xmlStrEqual( target, (const xmlChar*)"Fe56" ) )      { fCurrentIntType = ExpData::kNubarIon; }
    }
    
    return fCurrentIntType;

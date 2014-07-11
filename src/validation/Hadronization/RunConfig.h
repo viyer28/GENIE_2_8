@@ -32,7 +32,8 @@ class RunConfig
       std::string          GetCurrentModelName()   const;  
       std::string&         GetCurrentGSampleName() const;
       std::string          GetOutputFormat()       const { return fOutputFormat; }
-      const ExpData*       GetExpData()            const { return fExpData; }
+//      const ExpData*       GetExpData()            const { return fExpData; }
+      ExpData*       GetExpData()            const { return fExpData; }
 
    private:
      
