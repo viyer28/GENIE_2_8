@@ -46,6 +46,7 @@ Analyzer::Analyzer()
 { 
 
    fOutputFormat = "gif"; 
+   fExpDataPtr = 0 ;
 
 }
 
@@ -67,16 +68,20 @@ Analyzer::~Analyzer()
       }
    } 
    
+   // do NOT delete fExpDataPtr !!!
+   
 }
 
 void Analyzer::AddPlots( std::vector<GenPlotsBase*>& plots )
 {
 
-   plots.push_back( new ChHadW2() );
-   plots.push_back( new NegChHadD() );
-   plots.push_back( new ChHadDoverMultW2() );
-   plots.push_back( new Pi0W2() );
-   plots.push_back( new Pi0D() );
+   assert(fExpDataPtr);
+   
+   if ( fExpDataPtr->Exists( fInteractionType, "ChHad_W2" ) )   plots.push_back( new ChHadW2() );
+   if ( fExpDataPtr->Exists( fInteractionType, "NegChHad_D" ) ) plots.push_back( new NegChHadD() );
+   if ( fExpDataPtr->Exists( fInteractionType, "ChHad_D_W2ChHad_D_W2" ) ) plots.push_back( new ChHadDoverMultW2() );
+   if ( fExpDataPtr->Exists( fInteractionType, "Pi0_W2" ) )     plots.push_back( new Pi0W2() );
+   if ( fExpDataPtr->Exists( fInteractionType, "Pi0_D" ) )      plots.push_back( new Pi0D() );
 
    return;
 
@@ -403,7 +408,7 @@ bool Analyzer::CheckInteractionType( const int NEvt )
 
 }
 
-void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
+void Analyzer::DrawResults( const int nmodels ) 
 {
       
 // FIXME !!!
@@ -411,7 +416,7 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
 // specified per model match vs what is specified for another model s!!!
 
 
-   const std::map< std::string, std::vector<ExpGraph*> >* ExpGraphs; // = dsets->GetExpDataGraphs( fInteractionType );
+   const std::map< std::string, std::vector<ExpGraph*> >* ExpGraphs; 
 
    std::map< std::string, std::vector<ExpGraph*> >::const_iterator ditr;
 
@@ -461,7 +466,7 @@ void Analyzer::DrawResults( const int nmodels, const ExpData* dsets )
 	   if ( im == 0 ) 
 	   {
 	      
-	      ExpGraphs =  dsets->GetExpDataGraphs( itype );
+	      ExpGraphs =  fExpDataPtr->GetExpDataGraphs( itype );
               if ( !ExpGraphs )
               {
                  LOG("gvldtest", pNOTICE) << " NO EXP.DATA FOUND IN STORAGE FOR INTERACTION TYPE " << itype;

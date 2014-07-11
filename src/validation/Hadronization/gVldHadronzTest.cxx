@@ -59,6 +59,7 @@ int main(int argc, char ** argv)
   RunConfig* run      = new RunConfig( argc, argv );
   Analyzer*   analyzer = new Analyzer();
   analyzer->SetOutputFormat( run->GetOutputFormat() );
+  analyzer->SetExpDataPtr( run->GetExpData() );
     
   do 
   {
@@ -70,7 +71,7 @@ int main(int argc, char ** argv)
   
   } while ( !run->IsDone() );
 
-  analyzer->DrawResults( run->GetNModels(), run->GetExpData() );
+  analyzer->DrawResults( run->GetNModels() ); 
 
   LOG("gvldtest", pNOTICE) << "Done!";
 
