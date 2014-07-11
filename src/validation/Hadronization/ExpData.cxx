@@ -483,6 +483,25 @@ const std::map< std::string, std::vector<ExpGraph*> >* ExpData::GetExpDataGraphs
 
 }
 
+bool ExpData::Exists( const InteractionType& type, const std::string& var ) const
+{
+
+   if ( type == kInvalid ) return false;
+   
+   std::map< InteractionType, std::map< std::string, std::vector<ExpGraph*> > >::const_iterator i = fGraphs.find(type);
+   
+   if ( i != fGraphs.end() )
+   {
+      
+      std::map< std::string, std::vector<ExpGraph*> >::const_iterator ii = (i->second).find(var); 
+      if ( ii != (i->second).end() ) return true;
+   }
+      
+   return false;
+
+}
+
+
 ExpData::InteractionType ExpData::CheckInteractionType( const xmlChar* projectile, const xmlChar* target )
 {
    

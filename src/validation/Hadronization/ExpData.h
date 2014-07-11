@@ -95,7 +95,9 @@ class ExpData
       bool LoadExpData( const std::string& );
             
       const std::map< std::string, std::vector<std::string> >*    GetExpDataNames( const InteractionType& ) const;
-      const std::map< std::string, std::vector<ExpGraph*> >*      GetExpDataGraphs( const InteractionType& ) const; 
+      const std::map< std::string, std::vector<ExpGraph*> >*      GetExpDataGraphs( const InteractionType& ) const;
+      
+      bool Exists( const InteractionType&, const std::string& ) const ;
    
    private:
    
