@@ -118,6 +118,13 @@ Generator-%d                alg     No
      <param type="alg" name="Generator-2">   genie::EventGenerator/IMD-ANH  </param>
   </param_set>
 
+  <param_set name="VLE"> 
+     <param type="int" name="NGenerators">   2                            </param>
+     <param type="alg" name="Generator-0">   genie::EventGenerator/NUE-EL </param>
+     <param type="alg" name="Generator-1">   genie::EventGenerator/IBD-CC  </param>
+     <!-- <param type="alg" name="Generator-2">   genie::EventGenerator/IBD-NC  </param> -->
+  </param_set>
+
   <param_set name="QE"> 
      <param type="int" name="NGenerators">   2                             </param>
      <param type="alg" name="Generator-0">   genie::EventGenerator/QEL-CC  </param>
