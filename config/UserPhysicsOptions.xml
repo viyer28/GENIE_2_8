@@ -264,11 +264,12 @@ STFC, Rutherford Appleton Laboratory
 -->
   <param type="bool" name="IsotopesUseSameNuclearModel">  true                           </param>
 
-<!-- transverse enhancement parameters.  Switch on if using EffectiveSF -->
+<!-- transverse enhancement parameters.
+     See http://arxiv.org/abs/1405.0583 and http://arxiv.org/abs/1106.0340 -->
   <param type="bool" name="UseTransverseEnhancement">  false </param>
   <param type="double" name="TransEnhMagneticFF_RT_A"> 5.19  </param>
   <param type="double" name="TransEnhMagneticFF_RT_B"> 0.376 </param>
-  <param type="double" name="TransEnhf1p1hMod">        1.23  </param>
+  <param type="double" name="TransEnhf1p1hMod">        1.18  </param>
   
  <!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

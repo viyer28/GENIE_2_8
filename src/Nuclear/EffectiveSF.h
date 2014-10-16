@@ -6,7 +6,7 @@
 \brief    An effective spectral function to match psi' superscaling.
           Implements the NuclearModelI interface.
 
-\ref      
+\ref      http://arxiv.org/abs/1405.0583
 
 \author   Brian Coopersmith, University of Rochester
 
@@ -52,12 +52,28 @@ public:
   
 private:
   TH1D * ProbDistro (const Target & t) const;
+
+  // Initializes the momentum probability distribution based on the parameters
+  // described in http://arxiv.org/abs/1405.0583 or supplied in EffectiveSF.xml
   TH1D * MakeEffectiveSF(const Target & target) const;
-  TH1D * MakeEffectiveSF(double bs, double bp, double alpha, double beta, double c1, double c2, double c3, const Target & target) const;
+
+  // Initializes the momentum probability distribution with the given
+  // parameters according to the functional form from
+  // http://arxiv.org/abs/1405.0583
+  TH1D * MakeEffectiveSF(double bs, double bp, double alpha, double beta,
+                         double c1, double c2, double c3,
+                         const Target & target) const;
+
+  // Returns the binding energy given in http://arxiv.org/abs/1405.0583 or
+  // one supplied in EffectiveSF.xml.
   double ReturnBindingEnergy(const Target & target) const;
+  
+  // Returns f1p1h, the probability of interaction via the 1p1h process,
+  // given in the reference or supplied in EffectiveSF.xml.
   double Returnf1p1h(const Target & target) const;
   void   LoadConfig (void);
-  bool   GetDoubleKeyPDG(const char* valName, double & val,const int pdgc) const;
+  bool   GetDoubleKeyPDG(
+      const char* valName, double & val, const int pdgc) const;
 
   mutable map<string, TH1D *> fProbDistroMap;
   double fPMax;
