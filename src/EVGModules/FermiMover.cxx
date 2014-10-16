@@ -131,29 +131,36 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
 
   double EN=0;
   fEject2p2h = false;
-  if(fNuclModel->ModelType(*tgt) == kNucmEffSpectralFunc)
-  {
+  // Use the interaction kinematics described in http://arxiv.org/abs/1405.0583
+  // Missing from this model is the low Q^2 correction factor V from eq (7).
+  if(fNuclModel->ModelType(*tgt) == kNucmEffSpectralFunc) {
     RandomGen * rnd = RandomGen::Instance();
     double prob = rnd->RndGen().Rndm();
     double f1p1h = fNuclModel->Getf1p1h();
-    if(prob < f1p1h) //momentum balanced by on shell A-1 nucleus
-    {
-      EN = nucleon->Mass() - w - pF2/(2*(nucleus->Mass()-nucleon->Mass()));
+    // momentum balanced by on shell A-1 nucleus (1p1h)
+    if(prob < f1p1h) { 
+      EN = nucleon->Mass() - w -
+           pF2 / (2 * (nucleus->Mass() - nucleon->Mass()));
     }
-    else //momentum balanced by on shell nucleon
-    {
+    //momentum balanced by on shell nucleon (2p2h)
+    else {
       TParticlePDG * other_nucleon;
-      if(nucleon->Pdg() == kPdgProton)
+      if(nucleon->Pdg() == kPdgProton) {
         other_nucleon = PDGLibrary::Instance()->Find(kPdgNeutron);
-      else
+      }
+      else {
         other_nucleon = PDGLibrary::Instance()->Find(kPdgProton);
+      }
       TParticlePDG * deuteron = PDGLibrary::Instance()->Find(1000010020);
-      EN = deuteron->Mass() - 2*w - TMath::Sqrt(pF2 + other_nucleon->Mass()*other_nucleon->Mass());
-      fEject2p2h = deuteron->PdgCode() != nucleus->Pdg(); //don't eject other nucleon if target is deuterium- need to leave behind a remnant nucleus
+      EN = deuteron->Mass() - 2 * w -
+           TMath::Sqrt(pF2 + other_nucleon->Mass() * other_nucleon->Mass());
+      // Eject a remnant nucleon for the 2p2h process. Don't eject other
+      // nucleon if target is deuterium- need to leave behind a
+      // valid remnant nucleus.
+      fEject2p2h = deuteron->PdgCode() != nucleus->Pdg(); 
     }
   }
-  else
-  {
+  else {
     if(!fKeepNuclOnMassShell) {
        //-- compute A,Z for final state nucleus & get its PDG code 
        int nucleon_pdgc = nucleon->Pdg();
@@ -236,6 +243,9 @@ void FermiMover::Emit2ndNucleonFromSRC(GHepRecord * evrec) const
   double kF = kft->FindClosestKF(nucleus_pdgc, nucleon_pdgc);
 
   // check whether to emit a nucleon due to short range corelation
+  // First option ejects in the case of Bodek Ritchie for nucleon momenta in
+  // the tail.  The second option ejects for the Effective Spectral Function
+  // if the interaction was 2p2h.
   bool eject = (pn > kF || fEject2p2h);
   if(eject) {
 
@@ -244,9 +254,9 @@ void FermiMover::Emit2ndNucleonFromSRC(GHepRecord * evrec) const
         << "Ejecting recoil nucleon";
 
     double Pp = (nucleon->Pdg() == kPdgProton) ? 0.05 : 0.95;
-    if(fEject2p2h)
-    {
-      Pp = (nucleon->Pdg() == kPdgProton) ? 0.0 : 1.0;  //always balanced by on shell deuteron in EffectiveSF
+    if(fEject2p2h) {
+      // always balanced by on shell deuteron in EffectiveSF
+      Pp = (nucleon->Pdg() == kPdgProton) ? 0.0 : 1.0;
     }
     RandomGen * rnd = RandomGen::Instance();
     double prob = rnd->RndGen().Rndm();

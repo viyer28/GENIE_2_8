@@ -34,6 +34,8 @@ Algorithm(name)
 NuclearModelI::NuclearModelI(string name, string config) :
 Algorithm(name, config)
 {
+  // Set the fraction of 1p1h events to 1 for all nuclear models.
+  // This constant will be modified by EffectiveSF.cxx
   fCurrf1p1h = 1;
 }
 //____________________________________________________________________________
