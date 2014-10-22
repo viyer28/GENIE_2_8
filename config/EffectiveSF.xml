@@ -30,7 +30,8 @@ Note: below are the same options as above, but for a range of total nucleons in 
 in the original paper.  This config file contains the default options as described in the original paper.
 Unless specifying individual nuclei using the options above, make sure ranges are specified for every nucleus
 you will be using.  All ranges are inclusive.
-To specify an open ended range on the right hand side (eg all A larger than x) use LowA=x;HighA=Inf
+To specify an open ended range on the right hand side (eg all A larger than x) use LowA=x;HighA=419
+Values of A greater than 419 will not be checked or read in properly.
 
 BindingEnergy@LowA=?;HighA=? double   Yes      effective binding energy for inclusive A range  Varies
 f1p1h@LowA=?;HighA=?         double   Yes      probability for 1p1h recoil for A range
@@ -135,15 +136,15 @@ c3@LowA=?HighA=?             double   Yes      Momentum distribution parameters 
 <param type="double" name="c3@LowA=56;HighA=60">            0.00140556 </param>
 
 <!--  A > 60 -->
-<param type="double" name="BindingEnergy@LowA=61;HighA=Inf"> 0.0187988 </param>
-<param type="double" name="f1p1h@LowA=61;HighA=Inf">         0.89556 </param>
-<param type="double" name="bs@LowA=61;HighA=Inf">            1.52067 </param>
-<param type="double" name="bp@LowA=61;HighA=Inf">            0.585172 </param>
-<param type="double" name="alpha@LowA=61;HighA=Inf">         11.2361 </param>
-<param type="double" name="beta@LowA=61;HighA=Inf">          13.3336 </param>
-<param type="double" name="c1@LowA=61;HighA=Inf">            174.424 </param>
-<param type="double" name="c2@LowA=61;HighA=Inf">            5.28673 </param>
-<param type="double" name="c3@LowA=61;HighA=Inf">            9.27737e-05 </param>
+<param type="double" name="BindingEnergy@LowA=61;HighA=419"> 0.0187988 </param>
+<param type="double" name="f1p1h@LowA=61;HighA=419">         0.89556 </param>
+<param type="double" name="bs@LowA=61;HighA=419">            1.52067 </param>
+<param type="double" name="bp@LowA=61;HighA=419">            0.585172 </param>
+<param type="double" name="alpha@LowA=61;HighA=419">         11.2361 </param>
+<param type="double" name="beta@LowA=61;HighA=419">          13.3336 </param>
+<param type="double" name="c1@LowA=61;HighA=419">            174.424 </param>
+<param type="double" name="c2@LowA=61;HighA=419">            5.28673 </param>
+<param type="double" name="c3@LowA=61;HighA=419">            9.27737e-05 </param>
 
 
 </param_set>

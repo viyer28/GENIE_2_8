@@ -345,7 +345,19 @@ bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,
   s<<valName<<"@Pdg="<<pdgc;
   RgKey key = s.str();
   if(!this->GetConfig().Exists(key)) {
-   return false;
+    return false;
+  }
+  val = fConfig->GetDoubleDef(key,0);
+  return true;
+}
+//____________________________________________________________________________
+bool EffectiveSF::GetDoubleKeyRangeNucA(const char* valName, double & val,
+                                        const int lowA, const int highA) {
+  ostringstream s;
+  s<<valName<<"@LowA="<<lowA<<";HighA="<<highA;
+  RgKey key = s.str();
+  if(!this->GetConfig().Exists(key)) {
+    return false;
   }
   val = fConfig->GetDoubleDef(key,0);
   return true;
