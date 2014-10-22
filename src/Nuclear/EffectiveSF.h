@@ -73,7 +73,9 @@ private:
   double Returnf1p1h(const Target & target) const;
   void   LoadConfig (void);
   bool   GetDoubleKeyPDG(
-      const char* valName, double & val, const int pdgc) const;
+      const char* valName, double& val, const int pdgc) const;
+  bool GetDoubleKeyRangeNucA(
+    const char* valName, double& val, const int lowA, const int highA) const;
 
   mutable map<string, TH1D *> fProbDistroMap;
   double fPMax;
@@ -88,8 +90,8 @@ private:
   // Map from range of A (pair<lowA, highA> inclusive> to spectral
   // function parameters.
   map<pair<int, int>, double> fRangeNucRmvE;
-  map<pair<int, int>, double> fRangef1p1hMap;
-  map<pair<int, int>, double> fRangeProbDistParams;
+  map<pair<int, int>, double> fRange1p1hMap;
+  map<pair<int, int>, std::vector<double> > fRangeProbDistParams;
 };
 
 }         // genie namespace

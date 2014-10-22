@@ -145,10 +145,10 @@ TH1D * EffectiveSF::MakeEffectiveSF(const Target & target) const
   }
   
   // Then check in the ranges of A
-  map<pair<int, int>, double>::const_iterator range_it = fRangeProbDistParams.begin();
+  map<pair<int, int>, vector<double> >::const_iterator range_it = fRangeProbDistParams.begin();
   for(; range_it != fRangeProbDistParams.end(); ++range_it) {
     if (target.A() >= range_it->first.first && target.A() <= range_it->first.second) {
-      vector<double> v = it->second;
+      vector<double> v = range_it->second;
       return this->MakeEffectiveSF(v[0], v[1], v[2], v[3],
                                    v[4], v[5], v[6], target);
     }
@@ -302,7 +302,7 @@ void EffectiveSF::LoadConfig(void)
       double eb, f;
       if(GetDoubleKeyRangeNucA("BindingEnergy", eb, lowA, highA)) {
         eb = TMath::Max(eb, 0.);
-        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " highA + 1
+        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " << highA + 1
           <<" -> using Eb =  " << eb << " GeV";
         fRangeNucRmvE[pair<int, int>(lowA, highA)] = eb;
       }
@@ -311,7 +311,7 @@ void EffectiveSF::LoadConfig(void)
         if(f < 0 || f > 1){
           f = 1;
         }
-        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " highA + 1
+        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " << highA + 1
           <<" -> using f1p1h =  " << f;
         fRange1p1hMap[pair<int, int>(lowA, highA)] = f;
       }
@@ -331,7 +331,7 @@ void EffectiveSF::LoadConfig(void)
         pars.push_back(c1);
         pars.push_back(c2);
         pars.push_back(c3);
-        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " highA + 1
+        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " << highA + 1
           <<" -> using bs =  " << bs << "; bp = "<< bp 
           << "; alpha = " << alpha << "; beta = "<<beta<<"; c1 = "<<c1
           <<"; c2 = "<<c2<< "; c3 = " << c3;
@@ -341,7 +341,7 @@ void EffectiveSF::LoadConfig(void)
   }
 }
 //____________________________________________________________________________
-bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,
+bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double& val,
                                   const int pdgc) const
 {
   ostringstream s;
@@ -354,8 +354,8 @@ bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,
   return true;
 }
 //____________________________________________________________________________
-bool EffectiveSF::GetDoubleKeyRangeNucA(const char* valName, double & val,
-                                        const int lowA, const int highA) {
+bool EffectiveSF::GetDoubleKeyRangeNucA(
+    const char* valName, double& val, const int lowA, const int highA) const {
   ostringstream s;
   s<<valName<<"@LowA="<<lowA<<";HighA="<<highA;
   RgKey key = s.str();
