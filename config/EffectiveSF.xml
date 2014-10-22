@@ -7,27 +7,145 @@ Configuration for the Effective Spectral Function model
 
 Configurable Parameters:
 .............................................................................................................
-Name                Type    Optional   Comment                      Default
+Name                         Type     Optional  Comment                                        Default
 .............................................................................................................
-MomentumMax         double   Yes       max p in prob distribution                     1 GeV
-MomentumCutOff      double   Yes       momentum cut off value                         0.65 GeV
-BindingEnergy@Pdg=? double   Yes       effective binding energy for that nucleon      Varies
-f1p1h@Pdg=?         double   Yes       probability for 1p1h recoil                    Varies
-bs@Pdg=?            double   Yes
-bp@Pdg=?            double   Yes
-alpha@Pdg=?         double   Yes
-beta@Pdg=?          double   Yes
-c1@Pdg=?            double   Yes
-c2@Pdg=?            double   Yes
-c3@Pdg=?            double   Yes      parameters for generating momentum              Varies
-                                      distributions. make sure your parameters
-                                      generate only positive distributions up to
-                                      your MomentumCutOff value.  Must specify all
-                                      7 of them for a given nucleus or none will be
-                                      used.
+MomentumMax                  double   Yes       max p in prob distribution                     1 GeV
+MomentumCutOff               double   Yes       momentum cut off value                         0.65 GeV
+BindingEnergy@Pdg=?          double   Yes       effective binding energy for that nucleon      Varies
+f1p1h@Pdg=?                  double   Yes       probability for 1p1h recoil                    Varies
+bs@Pdg=?                     double   Yes
+bp@Pdg=?                     double   Yes
+alpha@Pdg=?                  double   Yes
+beta@Pdg=?                   double   Yes
+c1@Pdg=?                     double   Yes
+c2@Pdg=?                     double   Yes
+c3@Pdg=?                     double   Yes      parameters for generating momentum              Varies
+                                               distributions. make sure your parameters
+                                               generate only positive distributions up to
+                                               your MomentumCutOff value.  Must specify all
+                                               7 of them for a given nucleus or none will be
+                                               used.
+
+Note: below are the same options as above, but for a range of total nucleons in the nucleus (A), as presented
+in the original paper.  This config file contains the default options as described in the original paper.
+Unless specifying individual nuclei using the options above, make sure ranges are specified for every nucleus
+you will be using.  All ranges are inclusive.
+To specify an open ended range on the right hand side (eg all A larger than x) use LowA=x;HighA=Inf
+
+BindingEnergy@LowA=?;HighA=? double   Yes      effective binding energy for inclusive A range  Varies
+f1p1h@LowA=?;HighA=?         double   Yes      probability for 1p1h recoil for A range
+bs@LowA=?;HighA=?            double   Yes      
+bp@LowA=?;HighA=?            double   Yes
+alpha@LowA=?HighA=?          double   Yes
+beta@LowA=?HighA=?           double   Yes
+c1@LowA=?HighA=?             double   Yes
+c2@LowA=?HighA=?             double   Yes
+c3@LowA=?HighA=?             double   Yes      Momentum distribution parameters for range of A Varies
+
 -->
 
-  <param_set name="Default"> 
-  </param_set>
+<param_set name="Default">
+
+<!-- A=2 -->
+<param type="double" name="BindingEnergy@LowA=2;HighA=2"> 0.000126547 </param>
+<param type="double" name="f1p1h@LowA=2;HighA=2">         0.0 </param>
+<param type="double" name="bs@LowA=2;HighA=2">            0.413475 </param>
+<param type="double" name="bp@LowA=2;HighA=2">            1.75629 </param>
+<param type="double" name="alpha@LowA=2;HighA=2">         8.29029 </param>
+<param type="double" name="beta@LowA=2;HighA=2">          0.00362127 </param>
+<param type="double" name="c1@LowA=2;HighA=2">            0.186987 </param>
+<param type="double" name="c2@LowA=2;HighA=2">            6.24155 </param>
+<param type="double" name="c3@LowA=2;HighA=2">            0.000208154 </param>
+
+<!-- A=3 -->
+<param type="double" name="BindingEnergy@LowA=3;HighA=3"> 0.00534258 </param>
+<param type="double" name="f1p1h@LowA=3;HighA=3">         0.312043 </param>
+<param type="double" name="bs@LowA=3;HighA=3">            3.05583 </param>
+<param type="double" name="bp@LowA=3;HighA=3">            0.901861 </param>
+<param type="double" name="alpha@LowA=3;HighA=3">         10.932 </param>
+<param type="double" name="beta@LowA=3;HighA=3">          6.02976 </param>
+<param type="double" name="c1@LowA=3;HighA=3">            199.551 </param>
+<param type="double" name="c2@LowA=3;HighA=3">            1.92379 </param>
+<param type="double" name="c3@LowA=3;HighA=3">            5.26025e-05 </param>
+
+<!-- 3 < A < 8 -->
+<param type="double" name="BindingEnergy@LowA=4;HighA=7"> 0.0140444 </param>
+<param type="double" name="f1p1h@LowA=4;HighA=7">         0.791142 </param>
+<param type="double" name="bs@LowA=4;HighA=7">            2.14131 </param>
+<param type="double" name="bp@LowA=4;HighA=7">            0.775316 </param>
+<param type="double" name="alpha@LowA=4;HighA=7">         9.72776 </param>
+<param type="double" name="beta@LowA=4;HighA=7">          7.56679 </param>
+<param type="double" name="c1@LowA=4;HighA=7">            183.428 </param>
+<param type="double" name="c2@LowA=4;HighA=7">            5.53273 </param>
+<param type="double" name="c3@LowA=4;HighA=7">            0.000589888 </param>
+
+<!-- 7 < A < 17 -->
+<param type="double" name="BindingEnergy@LowA=8;HighA=16"> 0.0124744 </param>
+<param type="double" name="f1p1h@LowA=8;HighA=16">         0.807758 </param>
+<param type="double" name="bs@LowA=8;HighA=16">            2.11978 </param>
+<param type="double" name="bp@LowA=8;HighA=16">            0.736561 </param>
+<param type="double" name="alpha@LowA=8;HighA=16">         12.941 </param>
+<param type="double" name="beta@LowA=8;HighA=16">          10.6195 </param>
+<param type="double" name="c1@LowA=8;HighA=16">            197.014 </param>
+<param type="double" name="c2@LowA=8;HighA=16">            9.94218 </param>
+<param type="double" name="c3@LowA=8;HighA=16">            4.36074e-05 </param>
+
+<!-- 16 < A < 26 -->
+<param type="double" name="BindingEnergy@LowA=17;HighA=25"> 0.0166338 </param>
+<param type="double" name="f1p1h@LowA=17;HighA=25">         0.764847 </param>
+<param type="double" name="bs@LowA=17;HighA=25">            1.81985 </param>
+<param type="double" name="bp@LowA=17;HighA=25">            0.609983 </param>
+<param type="double" name="alpha@LowA=17;HighA=25">         6.81283 </param>
+<param type="double" name="beta@LowA=17;HighA=25">          6.07869 </param>
+<param type="double" name="c1@LowA=17;HighA=25">            25.8688 </param>
+<param type="double" name="c2@LowA=17;HighA=25">            0.590602 </param>
+<param type="double" name="c3@LowA=17;HighA=25">            0.00220846 </param>
+
+<!-- 25 < A < 39 -->
+<param type="double" name="BindingEnergy@LowA=26;HighA=38"> 0.0124529 </param>
+<param type="double" name="f1p1h@LowA=26;HighA=38">         0.773977 </param>
+<param type="double" name="bs@LowA=26;HighA=38">            1.7394 </param>
+<param type="double" name="bp@LowA=26;HighA=38">            0.620821 </param>
+<param type="double" name="alpha@LowA=26;HighA=38">         7.20039 </param>
+<param type="double" name="beta@LowA=26;HighA=38">          6.73047 </param>
+<param type="double" name="c1@LowA=26;HighA=38">            21.0049 </param>
+<param type="double" name="c2@LowA=26;HighA=38">            0.592854 </param>
+<param type="double" name="c3@LowA=26;HighA=38">            0.00121452 </param>
+
+<!-- 38 < A < 56 -->
+<param type="double" name="BindingEnergy@LowA=39;HighA=55"> 0.0205751 </param>
+<param type="double" name="f1p1h@LowA=39;HighA=55">         0.808667 </param>
+<param type="double" name="bs@LowA=39;HighA=55">            1.66649 </param>
+<param type="double" name="bp@LowA=39;HighA=55">            0.614772 </param>
+<param type="double" name="alpha@LowA=39;HighA=55">         8.54288 </param>
+<param type="double" name="beta@LowA=39;HighA=55">          8.61544 </param>
+<param type="double" name="c1@LowA=39;HighA=55">            199.992 </param>
+<param type="double" name="c2@LowA=39;HighA=55">            6.24716 </param>
+<param type="double" name="c3@LowA=39;HighA=55">            0.00269039 </param>
+
+<!-- 55 < A < 61 -->
+<param type="double" name="BindingEnergy@LowA=56;HighA=60"> 0.0151136 </param>
+<param type="double" name="f1p1h@LowA=56;HighA=60">         0.822268 </param>
+<param type="double" name="bs@LowA=56;HighA=60">            1.79235 </param>
+<param type="double" name="bp@LowA=56;HighA=60">            0.597282 </param>
+<param type="double" name="alpha@LowA=56;HighA=60">         7.09555 </param>
+<param type="double" name="beta@LowA=56;HighA=60">          6.25598 </param>
+<param type="double" name="c1@LowA=56;HighA=60">            18.3744 </param>
+<param type="double" name="c2@LowA=56;HighA=60">            0.505288 </param>
+<param type="double" name="c3@LowA=56;HighA=60">            0.00140556 </param>
+
+<!--  A > 60 -->
+<param type="double" name="BindingEnergy@LowA=61;HighA=Inf"> 0.0187988 </param>
+<param type="double" name="f1p1h@LowA=61;HighA=Inf">         0.89556 </param>
+<param type="double" name="bs@LowA=61;HighA=Inf">            1.52067 </param>
+<param type="double" name="bp@LowA=61;HighA=Inf">            0.585172 </param>
+<param type="double" name="alpha@LowA=61;HighA=Inf">         11.2361 </param>
+<param type="double" name="beta@LowA=61;HighA=Inf">          13.3336 </param>
+<param type="double" name="c1@LowA=61;HighA=Inf">            174.424 </param>
+<param type="double" name="c2@LowA=61;HighA=Inf">            5.28673 </param>
+<param type="double" name="c3@LowA=61;HighA=Inf">            9.27737e-05 </param>
+
+
+</param_set>
 
 </alg_conf>
