@@ -79,9 +79,17 @@ private:
   double fPMax;
   double fPCutOff;
   double fTransEnh1p1hMod;
+
+  // Map from PDG code to spectral function parameters
   map<int, double> fNucRmvE;
   map<int, double> f1p1hMap;
   map<int, std::vector<double> > fProbDistParams;
+  
+  // Map from range of A (pair<lowA, highA> inclusive> to spectral
+  // function parameters.
+  map<pair<int, int>, double> fRangeNucRmvE;
+  map<pair<int, int>, double> fRangef1p1hMap;
+  map<pair<int, int>, double> fRangeProbDistParams;
 };
 
 }         // genie namespace
