@@ -341,11 +341,11 @@ void EffectiveSF::LoadConfig(void)
 bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,const int pdgc) const
 {
 	ostringstream s;
-	s<<valName<<"@Pdg="<<pdgc;
-	RgKey key = s.str();
-	if(!this->GetConfig().Exists(key)) {
-	  return false;
-	}
+  s<<valName<<"@Pdg="<<pdgc;
+  RgKey key = s.str();
+  if(!this->GetConfig().Exists(key)) {
+   return false;
+  }
   val = fConfig->GetDoubleDef(key,0);
   return true;
 }
