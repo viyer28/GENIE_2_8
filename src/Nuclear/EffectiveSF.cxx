@@ -330,15 +330,16 @@ void EffectiveSF::LoadConfig(void)
         pars.push_back(c3);
         LOG("EffectiveSF", pINFO)
           << "Nucleus: " << pdgc << " -> using bs =  " << bs << "; bp = "<< bp 
-          << "; alpha = " << alpha << "; beta = "<<beta<<"; c1 = "<<c1<<"; c2 = "<<c2
-          << "; c3 = " << c3;
+          << "; alpha = " << alpha << "; beta = "<<beta<<"; c1 = "<<c1
+          <<"; c2 = "<<c2<< "; c3 = " << c3;
         fProbDistParams.insert(map<int,vector<double> >::value_type(pdgc, pars));
       }
     }
   }
 }
 //____________________________________________________________________________
-bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,const int pdgc) const
+bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double & val,
+                                  const int pdgc) const
 {
 	ostringstream s;
   s<<valName<<"@Pdg="<<pdgc;
