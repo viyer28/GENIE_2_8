@@ -263,14 +263,9 @@ STFC, Rutherford Appleton Laboratory
   <param type="alg" name="NuclearModel@Pdg=1000260560">   genie::SpectralFunc1d/Default  </param>
 -->
   <param type="bool" name="IsotopesUseSameNuclearModel">  true                           </param>
-
-<!-- transverse enhancement parameters.
-     See http://arxiv.org/abs/1405.0583 and http://arxiv.org/abs/1106.0340 -->
-  <param type="bool" name="UseTransverseEnhancement">  false </param>
-  <param type="double" name="TransEnhMagneticFF_RT_A"> 5.19  </param>
-  <param type="double" name="TransEnhMagneticFF_RT_B"> 0.376 </param>
-  <param type="double" name="TransEnhf1p1hMod">        1.18  </param>
-  
+ 
+<!-- Option for turning on Transverse Enhancement by Elastic Form Factor adjustment. -->
+  <param type="bool" name="UseElFFTransverseEnhancement">  false                          </param>
  <!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Parameters related with GENIE's Fermi Gas (RFG) model implementation  
@@ -651,6 +646,8 @@ STFC, Rutherford Appleton Laboratory
   - genie::DipoleELFormFactorsModel
   - genie::BBA03ELFormFactorsModel, H.Budd, NuINT-02 proceedings
   - genie::BBA05ELFormFactorsModel, R.Bradford, A.Bodek, H.Budd and J.Arrington, hep-ex/0602017
+  - genie::TransverseEnhancementFFModel - in this case, must also specify some other form factor
+    calculation tool in TransverseEnhancementFFModel.xml
   -->
   <param type="alg" name="ElasticFormFactorsModel"> genie::BBA05ELFormFactorsModel/Default </param>
 

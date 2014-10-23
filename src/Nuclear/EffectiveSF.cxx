@@ -25,12 +25,14 @@
 #include "PDG/PDGCodes.h"
 #include "PDG/PDGUtils.h"
 #include "Numerical/RandomGen.h"
+#include "Utils/ConfigIsotopeMapUtils.h"
 #include "Utils/NuclearUtils.h"
 
 using std::ostringstream;
 using namespace genie;
 using namespace genie::constants;
 using namespace genie::utils;
+using namespace genie::utils::config;
 
 //____________________________________________________________________________
 EffectiveSF::EffectiveSF() :
@@ -96,9 +98,7 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
   fCurrf1p1h = this->Returnf1p1h(target);
   // Since TE increases the QE peak via a 2p2h process, we decrease f1p1h
   // in order to increase the 2p2h interaction to account for this enhancement.
-  if(target.A() >= 12) {
-    fCurrf1p1h /= fTransEnh1p1hMod;
-  }
+  fCurrf1p1h /= this->GetTransEnh1p1hMod(target);
   return true;
 }
 //____________________________________________________________________________
@@ -131,6 +131,17 @@ TH1D * EffectiveSF::ProbDistro(const Target & target) const
   assert( pdg::IsProton(nucleon_pdgc) || pdg::IsNeutron(nucleon_pdgc) );
   return this->MakeEffectiveSF(target);
 	
+}
+//____________________________________________________________________________
+double EffectiveSF::GetTransEnh1p1hMod(const Target& target) const {
+  double transEnhMod;
+	if(GetValueFromNuclearMaps(target, fTransEnh1p1hMods,
+	                           fRangeTransEnh1p1hMods, &transEnhMod) &&
+	   transEnhMod > 0) {
+	  return transEnhMod;
+	}
+  // If none specified, assume no enhancement to quasielastic peak
+  return 1.0;
 }
 //____________________________________________________________________________
 TH1D * EffectiveSF::MakeEffectiveSF(const Target & target) const
@@ -197,37 +208,22 @@ TH1D * EffectiveSF::MakeEffectiveSF(double bs, double bp, double alpha,
 //____________________________________________________________________________
 double EffectiveSF::ReturnBindingEnergy(const Target & target) const
 {
-  int pdgc  = pdg::IonPdgCode(target.A(), target.Z());
-  map<int,double>::const_iterator it = fNucRmvE.find(pdgc);
-  if(it != fNucRmvE.end()) {
-    return it->second;
-  }
-  
-  map<pair<int, int>, double>::const_iterator range_it = fRangeNucRmvE.begin();
-  for(; range_it != fRangeNucRmvE.end(); ++range_it) {
-  	if (target.A() >= range_it->first.first && target.A() <= range_it->first.second) {
-  		return range_it->second;
-  	}
-  }
-  
+	double binding_en;
+	if(GetValueFromNuclearMaps(target, fNucRmvE, fRangeNucRmvE, &binding_en) &&
+	   binding_en > 0) {
+	  return binding_en;
+	}
   return 0;
 }
 //____________________________________________________________________________
 double EffectiveSF::Returnf1p1h(const Target & target) const
 {
-  int pdgc  = pdg::IonPdgCode(target.A(), target.Z());
-  map<int,double>::const_iterator it = f1p1hMap.find(pdgc);
-  if(it != f1p1hMap.end()) {
-    return it->second;
-  }
-  
-  map<pair<int, int>, double>::const_iterator range_it = fRange1p1hMap.begin();
-  for(; range_it != fRange1p1hMap.end(); ++range_it) {
-  	if (target.A() >= range_it->first.first && target.A() <= range_it->first.second) {
-  		return range_it->second;
-  	}
-  }
-  return 0;
+  double f1p1h;
+	if(GetValueFromNuclearMaps(target, f1p1hMap, fRange1p1hMap, &f1p1h) &&
+	   f1p1h >= 0 && f1p1h <= 1) {
+	  return f1p1h;
+	}
+  return 1;
 }
 //____________________________________________________________________________
 void EffectiveSF::Configure(const Registry & config)
@@ -241,46 +237,50 @@ void EffectiveSF::Configure(string param_set)
   Algorithm::Configure(param_set);
   this->LoadConfig();
 }
+
 //____________________________________________________________________________
 void EffectiveSF::LoadConfig(void)
 {
   AlgConfigPool * confp = AlgConfigPool::Instance();
   Registry * gc = confp->GlobalParameterList();
-  fTransEnh1p1hMod = 1.0;
-  if(gc->GetBoolDef("UseTransverseEnhancement", false)) {
-    fTransEnh1p1hMod = gc->GetDoubleDef("TransEnhf1p1hMod", 1.18);
-  }
+  // Find out if Transverse enhancement is enabled to figure out whether to load
+  // the 2p2h enhancement parameters.
   fPMax    = fConfig->GetDoubleDef ("MomentumMax", 1.0);
 
   fPCutOff = fConfig->GetDoubleDef ("MomentumCutOff", 0.65);
 
   assert(fPMax > 0 && fPCutOff > 0 && fPCutOff <= fPMax);
+  RgAlg form_factors_model = fConfig->GetAlgDef(
+      "ElasticFormFactorsModel", gc->GetAlg("ElasticFormFactorsModel"));
+  if (!fConfig->GetBoolDef("UseElFFTransverseEnhancement", false)) {
+    LOG("EffectiveSF", pINFO) << "Transverse enhancement not used; do not "
+        "increase the 2p2h cross section.";
+  }
+  else {
+    LoadAllIsotopesForKey("TransEnhf1p1hMod", "EffectiveSF",
+                          fConfig, &fTransEnh1p1hMods);
+    LoadAllNucARangesForKey("TransEnhf1p1hMod", "EffectiveSF",
+                            fConfig, &fRangeTransEnh1p1hMods);
+  }
   
-  for(int Z = 1; Z < 140; Z++) {
-    for(int A = Z; A < 3*Z; A++) {
-      int pdgc = pdg::IonPdgCode(A, Z);
-      //get custom specified effective binding energy
-      double eb, f;
-      if(GetDoubleKeyPDG("BindingEnergy", eb, pdgc)) {
-        eb = TMath::Max(eb, 0.);
-        LOG("EffectiveSF", pINFO)
-          << "Nucleus: " << pdgc << " -> using Eb =  " << eb << " GeV";
-        fNucRmvE.insert(map<int,double>::value_type(pdgc, eb));
-      }
-      //get custom specified f1p1h
-      if(GetDoubleKeyPDG("f1p1h", f, pdgc)) {
-        if(f < 0 || f > 1){
-          f = 1;
-        }
-        LOG("EffectiveSF", pINFO)
-          << "Nucleus: " << pdgc << " -> using f1p1h =  " << f;
-        f1p1hMap.insert(map<int,double>::value_type(pdgc, f));
-      }
+  LoadAllIsotopesForKey("BindingEnergy", "EffectiveSF", fConfig, &fNucRmvE);
+  LoadAllNucARangesForKey("BindingEnergy", "EffectiveSF",
+                          fConfig, &fRangeNucRmvE);
+  LoadAllIsotopesForKey("f1p1h", "EffectiveSF", fConfig, &f1p1hMap);
+  LoadAllNucARangesForKey("f1p1h", "EffectiveSF", fConfig, &fRange1p1hMap);
+  
+
+  for (int Z = 1; Z < 140; Z++) {
+    for (int A = Z; A < 3*Z; A++) {
+      const int pdgc = pdg::IonPdgCode(A, Z);
       double bs, bp, alpha, beta, c1, c2, c3;
-      if(GetDoubleKeyPDG("bs", bs, pdgc) && GetDoubleKeyPDG("bp", bp, pdgc) && 
-        GetDoubleKeyPDG("alpha", alpha, pdgc) && GetDoubleKeyPDG("beta", beta, pdgc) && 
-        GetDoubleKeyPDG("c1", c1, pdgc) && GetDoubleKeyPDG("c2", c2, pdgc) && 
-        GetDoubleKeyPDG("c3", c3, pdgc)) {
+      if (GetDoubleKeyPDG("bs", pdgc, fConfig, &bs) &&
+          GetDoubleKeyPDG("bp", pdgc, fConfig, &bp) && 
+          GetDoubleKeyPDG("alpha", pdgc, fConfig, &alpha) &&
+          GetDoubleKeyPDG("beta", pdgc, fConfig, &beta) && 
+          GetDoubleKeyPDG("c1", pdgc, fConfig, &c1) &&
+          GetDoubleKeyPDG("c2", pdgc, fConfig, &c2) && 
+          GetDoubleKeyPDG("c3", pdgc, fConfig, &c3)) {
         vector<double> pars = vector<double>();
         pars.push_back(bs);
         pars.push_back(bp);
@@ -293,36 +293,20 @@ void EffectiveSF::LoadConfig(void)
           << "Nucleus: " << pdgc << " -> using bs =  " << bs << "; bp = "<< bp 
           << "; alpha = " << alpha << "; beta = "<<beta<<"; c1 = "<<c1
           <<"; c2 = "<<c2<< "; c3 = " << c3;
-        fProbDistParams.insert(map<int,vector<double> >::value_type(pdgc, pars));
+        fProbDistParams[pdgc] = pars;
       }
     }
   }
   for(int lowA = 1; lowA < 3 * 140; lowA++) {
     for(int highA = lowA; highA < 3 * 140; highA++) {
-      double eb, f;
-      if(GetDoubleKeyRangeNucA("BindingEnergy", eb, lowA, highA)) {
-        eb = TMath::Max(eb, 0.);
-        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " << highA + 1
-          <<" -> using Eb =  " << eb << " GeV";
-        fRangeNucRmvE[pair<int, int>(lowA, highA)] = eb;
-      }
-      //get custom specified f1p1h
-      if(GetDoubleKeyRangeNucA("f1p1h", f, lowA, highA)) {
-        if(f < 0 || f > 1){
-          f = 1;
-        }
-        LOG("EffectiveSF", pINFO) << "For "<< lowA - 1 <<" < A < " << highA + 1
-          <<" -> using f1p1h =  " << f;
-        fRange1p1hMap[pair<int, int>(lowA, highA)] = f;
-      }
       double bs, bp, alpha, beta, c1, c2, c3;
-      if (GetDoubleKeyRangeNucA("bs", bs, lowA, highA) &&
-          GetDoubleKeyRangeNucA("bp", bp, lowA, highA) && 
-          GetDoubleKeyRangeNucA("alpha", alpha, lowA, highA) &&
-          GetDoubleKeyRangeNucA("beta", beta, lowA, highA) && 
-          GetDoubleKeyRangeNucA("c1", c1, lowA, highA) &&
-          GetDoubleKeyRangeNucA("c2", c2, lowA, highA) && 
-          GetDoubleKeyRangeNucA("c3", c3, lowA, highA)) {
+      if (GetDoubleKeyRangeNucA("bs", lowA, highA, fConfig, &bs) &&
+          GetDoubleKeyRangeNucA("bp", lowA, highA, fConfig, &bp) &&
+          GetDoubleKeyRangeNucA("alpha", lowA, highA, fConfig, &alpha) &&
+          GetDoubleKeyRangeNucA("beta", lowA, highA, fConfig, &beta) &&
+          GetDoubleKeyRangeNucA("c1", lowA, highA, fConfig, &c1) &&
+          GetDoubleKeyRangeNucA("c2", lowA, highA, fConfig, &c2) &&
+          GetDoubleKeyRangeNucA("c3", lowA, highA, fConfig, &c3)) {
         vector<double> pars = vector<double>();
         pars.push_back(bs);
         pars.push_back(bp);
@@ -339,29 +323,4 @@ void EffectiveSF::LoadConfig(void)
       }
     }
   }
-}
-//____________________________________________________________________________
-bool EffectiveSF::GetDoubleKeyPDG(const char* valName, double& val,
-                                  const int pdgc) const
-{
-  ostringstream s;
-  s<<valName<<"@Pdg="<<pdgc;
-  RgKey key = s.str();
-  if(!this->GetConfig().Exists(key)) {
-    return false;
-  }
-  val = fConfig->GetDoubleDef(key,0);
-  return true;
-}
-//____________________________________________________________________________
-bool EffectiveSF::GetDoubleKeyRangeNucA(
-    const char* valName, double& val, const int lowA, const int highA) const {
-  ostringstream s;
-  s<<valName<<"@LowA="<<lowA<<";HighA="<<highA;
-  RgKey key = s.str();
-  if(!this->GetConfig().Exists(key)) {
-    return false;
-  }
-  val = fConfig->GetDoubleDef(key,0);
-  return true;
 }

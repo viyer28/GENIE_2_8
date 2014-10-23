@@ -67,31 +67,29 @@ private:
   // Returns the binding energy given in http://arxiv.org/abs/1405.0583 or
   // one supplied in EffectiveSF.xml.
   double ReturnBindingEnergy(const Target & target) const;
+  double GetTransEnh1p1hMod(const Target& target) const;
   
   // Returns f1p1h, the probability of interaction via the 1p1h process,
   // given in the reference or supplied in EffectiveSF.xml.
   double Returnf1p1h(const Target & target) const;
   void   LoadConfig (void);
-  bool   GetDoubleKeyPDG(
-      const char* valName, double& val, const int pdgc) const;
-  bool GetDoubleKeyRangeNucA(
-    const char* valName, double& val, const int lowA, const int highA) const;
 
   mutable map<string, TH1D *> fProbDistroMap;
   double fPMax;
   double fPCutOff;
-  double fTransEnh1p1hMod;
 
   // Map from PDG code to spectral function parameters
   map<int, double> fNucRmvE;
   map<int, double> f1p1hMap;
   map<int, std::vector<double> > fProbDistParams;
+  map<int, double> fTransEnh1p1hMods;
   
   // Map from range of A (pair<lowA, highA> inclusive> to spectral
   // function parameters.
   map<pair<int, int>, double> fRangeNucRmvE;
   map<pair<int, int>, double> fRange1p1hMap;
   map<pair<int, int>, std::vector<double> > fRangeProbDistParams;
+  map<pair<int, int>, double> fRangeTransEnh1p1hMods;
 };
 
 }         // genie namespace

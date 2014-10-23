@@ -48,21 +48,6 @@ protected:
   ELFormFactorsModelI();
   ELFormFactorsModelI(string name);
   ELFormFactorsModelI(string name, string config);
-
-  //! This function returns a modification of the magnetic form factors Gmn and
-  //! Gmp as a function Q^2 for nuclei heavier than carbon if 
-  //! UseTransverseEnhancement is set to true in UserPhysicsOptions.xml.  This
-  //! models an observed enhancement in the quasi elastic peak.
-  //! See http://arxiv.org/abs/1106.0340 and http://arxiv.org/abs/1405.0583
-  virtual double GetTransEnhMagFF(
-      double magFF, const Interaction * interaction) const;
-
-  //! Configures whether to use transverse enhancement or not, and sets
-  //! constants defined in UserPhysicsOptions.xml.
-  void ConfigTransEnh();
-  double fTransEnhA;
-  double fTransEnhB;
-  bool fUseTransEnh;
 };
 
 }         // genie namespace

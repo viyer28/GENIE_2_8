@@ -9,10 +9,10 @@ Configurable Parameters:
 .............................................................................................................
 Name                         Type     Optional  Comment                                        Default
 .............................................................................................................
-MomentumMax                  double   Yes       max p in prob distribution                     1 GeV
-MomentumCutOff               double   Yes       momentum cut off value                         0.65 GeV
 BindingEnergy@Pdg=?          double   Yes       effective binding energy for that nucleon      Varies
 f1p1h@Pdg=?                  double   Yes       probability for 1p1h recoil                    Varies
+TransEnhf1p1hMod@Pdg=?       double   Yes       Enhancement to QE peak by 2p2h process.  Only  1
+                                                used if Transverse Enhancement is enabled.
 bs@Pdg=?                     double   Yes
 bp@Pdg=?                     double   Yes
 alpha@Pdg=?                  double   Yes
@@ -35,6 +35,8 @@ Values of A greater than 419 will not be checked or read in properly.
 
 BindingEnergy@LowA=?;HighA=? double   Yes      effective binding energy for inclusive A range  Varies
 f1p1h@LowA=?;HighA=?         double   Yes      probability for 1p1h recoil for A range
+TransEnhf1p1hMod@LowA=?;HighA=?
+                             double   Yes      Enhancement if TE is enabled for A range        1
 bs@LowA=?;HighA=?            double   Yes      
 bp@LowA=?;HighA=?            double   Yes
 alpha@LowA=?HighA=?          double   Yes
@@ -42,6 +44,7 @@ beta@LowA=?HighA=?           double   Yes
 c1@LowA=?HighA=?             double   Yes
 c2@LowA=?HighA=?             double   Yes
 c3@LowA=?HighA=?             double   Yes      Momentum distribution parameters for range of A Varies
+
 
 -->
 
@@ -146,6 +149,9 @@ c3@LowA=?HighA=?             double   Yes      Momentum distribution parameters 
 <param type="double" name="c2@LowA=61;HighA=419">            5.28673 </param>
 <param type="double" name="c3@LowA=61;HighA=419">            9.27737e-05 </param>
 
+<!-- Transverse enhancement parameters -->
+<param type="double" name="TransEnhf1p1hMod@LowA=1;HighA=11">   1.0 </param>
+<param type="double" name="TransEnhf1p1hMod@LowA=12;HighA=419"> 1.18 </param>
 
 </param_set>
 
