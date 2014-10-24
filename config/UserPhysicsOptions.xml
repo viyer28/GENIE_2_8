@@ -265,8 +265,9 @@ STFC, Rutherford Appleton Laboratory
   <param type="bool" name="IsotopesUseSameNuclearModel">  true                           </param>
  
 <!-- Option for turning on Transverse Enhancement by Elastic Form Factor adjustment. -->
-  <param type="bool" name="UseElFFTransverseEnhancement">  false                          </param>
- <!-- 
+  <param type="bool" name="UseElFFTransverseEnhancement">  false                              </param>
+  <param type="alg" name="TransverseEnhancement"> genie::TransverseEnhancementFFModel/Default </param>
+<!-- 
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   Parameters related with GENIE's Fermi Gas (RFG) model implementation  
   - RFG-Momentum-CutOff is a momentum cut-off for the NN correlation tail
