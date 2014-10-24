@@ -190,12 +190,14 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
        EN = TMath::Sqrt(MN2+pF2);
     }
   }
+
   //-- update the struck nucleon 4p at the interaction summary and at
   //   the GHEP record
   p4->SetPx( p3.Px() );
   p4->SetPy( p3.Py() );
   p4->SetPz( p3.Pz() );
-  p4->SetE ( EN      );
+  p4->SetE ( EN      ); 
+
   nucleon->SetMomentum(*p4); // update GHEP value
 
   // Sometimes, for interactions near threshold, Fermi momentum might bring
