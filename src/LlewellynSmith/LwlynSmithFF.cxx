@@ -138,7 +138,7 @@ void LwlynSmithFF::LoadConfig(void)
                                           this->SubAlg("ElasticFormFactorsModel"));
   assert(fElFFModel);
   fCleanUpfElFFModel = false;
-  if(gc->GetDoubleDef("UseElFFTransverseEnhancement", false)) {
+  if(gc->GetBoolDef("UseElFFTransverseEnhancement", false)) {
     const ELFormFactorsModelI* sub_alg = fElFFModel;
     RgAlg transverse_enhancement = gc->GetAlg("TransverseEnhancement");
     fElFFModel = dynamic_cast<const ELFormFactorsModelI *> (

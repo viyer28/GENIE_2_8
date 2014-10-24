@@ -252,7 +252,7 @@ void EffectiveSF::LoadConfig(void)
   assert(fPMax > 0 && fPCutOff > 0 && fPCutOff <= fPMax);
   RgAlg form_factors_model = fConfig->GetAlgDef(
       "ElasticFormFactorsModel", gc->GetAlg("ElasticFormFactorsModel"));
-  if (!fConfig->GetBoolDef("UseElFFTransverseEnhancement", false)) {
+  if (!gc->GetBoolDef("UseElFFTransverseEnhancement", false)) {
     LOG("EffectiveSF", pINFO) << "Transverse enhancement not used; do not "
         "increase the 2p2h cross section.";
   }

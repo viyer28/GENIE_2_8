@@ -74,7 +74,7 @@ bool GetDoubleKeyPDG(const char* valName, const int pdgc,
   ostringstream s;
   s<<valName<<"@Pdg="<<pdgc;
   RgKey key = s.str();
-  if(config->Exists(key)) {
+  if(!config->Exists(key)) {
     return false;
   }
   *val = config->GetDoubleDef(key,0);
@@ -88,7 +88,7 @@ bool GetDoubleKeyRangeNucA(const char* valName, const int lowA,
   ostringstream s;
   s<<valName<<"@LowA="<<lowA<<";HighA="<<highA;
   RgKey key = s.str();
-  if(config->Exists(key)) {
+  if(!config->Exists(key)) {
     return false;
   }
   *val = config->GetDoubleDef(key,0);
