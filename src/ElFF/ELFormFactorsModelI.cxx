@@ -16,10 +16,7 @@
 */
 //____________________________________________________________________________
 
-#include <TMath.h>
 #include "ElFF/ELFormFactorsModelI.h"
-#include "Algorithm/AlgConfigPool.h"
-#include "Interaction/Interaction.h"
 
 using namespace genie;
 
@@ -46,3 +43,8 @@ ELFormFactorsModelI::~ELFormFactorsModelI()
 {
 
 }
+//____________________________________________________________________________
+
+
+
+
