@@ -154,31 +154,31 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
   // Do default Fermi Moving
   } else  {
     if (!fKeepNuclOnMassShell) {
-	    //-- compute A,Z for final state nucleus & get its PDG code 
-	    int nucleon_pdgc = nucleon->Pdg();
-	    bool is_p  = pdg::IsProton(nucleon_pdgc);
-	    int Z = (is_p) ? nucleus->Z()-1 : nucleus->Z();
-	    int A = nucleus->A() - 1;
+      //-- compute A,Z for final state nucleus & get its PDG code 
+      int nucleon_pdgc = nucleon->Pdg();
+      bool is_p  = pdg::IsProton(nucleon_pdgc);
+      int Z = (is_p) ? nucleus->Z()-1 : nucleus->Z();
+      int A = nucleus->A() - 1;
 
-	    TParticlePDG * fnucleus = 0;
-	    int ipdgc = pdg::IonPdgCode(A, Z);
-	    fnucleus = PDGLibrary::Instance()->Find(ipdgc);
-	    if(!fnucleus) {
-	      LOG("FermiMover", pFATAL)
-	            << "No particle with [A = " << A << ", Z = " << Z
-	                          << ", pdgc = " << ipdgc << "] in PDGLibrary!";
-	      exit(1);
-	    }
-	    //-- compute the energy of the struck (off the mass-shell) nucleus
+      TParticlePDG * fnucleus = 0;
+      int ipdgc = pdg::IonPdgCode(A, Z);
+      fnucleus = PDGLibrary::Instance()->Find(ipdgc);
+      if(!fnucleus) {
+        LOG("FermiMover", pFATAL)
+              << "No particle with [A = " << A << ", Z = " << Z
+              << ", pdgc = " << ipdgc << "] in PDGLibrary!";
+        exit(1);
+      }
+      //-- compute the energy of the struck (off the mass-shell) nucleus
 
-	    double Mf  = fnucleus -> Mass(); // remnant nucleus mass
-	    double Mi  = nucleus  -> Mass(); // initial nucleus mass
-	    
-	    EN = Mi - TMath::Sqrt(pF2 + Mf*Mf);
+      double Mf  = fnucleus -> Mass(); // remnant nucleus mass
+      double Mi  = nucleus  -> Mass(); // initial nucleus mass
+
+      EN = Mi - TMath::Sqrt(pF2 + Mf*Mf);
     } else {
-	    double MN  = nucleon->Mass();
-	    double MN2 = TMath::Power(MN,2);
-	    EN = TMath::Sqrt(MN2+pF2);
+      double MN  = nucleon->Mass();
+      double MN2 = TMath::Power(MN,2);
+      EN = TMath::Sqrt(MN2+pF2);
     }
     if (fSRCRecoilNucleon) {
       const int nucleus_pdgc = nucleus->Pdg();
