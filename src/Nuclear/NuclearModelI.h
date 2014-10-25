@@ -41,10 +41,8 @@ public:
   virtual double         RemovalEnergy   (void)           const;
   virtual double         Momentum        (void)           const;
   virtual TVector3       Momentum3       (void)           const;
-  // Returns f1p1h, the probability of interacting via the 1p1h process for a
-  // given nuclues in the Effective Spectral Function model.  This always
-  // returns 1 for other nuclear models.
-  virtual double         Getf1p1h        (void)           const;
+  virtual FermiMoverInteractionType_t GetFermiMoverInteractionType(void) const;
+
 protected:
   NuclearModelI();
   NuclearModelI(string name);
@@ -52,7 +50,7 @@ protected:
 
   mutable double   fCurrRemovalEnergy;
   mutable TVector3 fCurrMomentum;
-  mutable double fCurrf1p1h;
+  mutable FermiMoverInteractionType_t fFermiMoverInteractionType;
 
 };
 

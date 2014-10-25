@@ -33,7 +33,13 @@ typedef enum ENuclearModel {
    kNucmEffSpectralFunc
 
 } NuclearModel_t; 
-  
+
+typedef enum EFermiMoverInteractionType {
+  kFermiMoveDefault = 0,
+  kFermiMoveEffectiveSF1p1h,
+  kFermiMoveEffectiveSF2p2h_eject,
+  kFermiMoveEffectiveSF2p2h_noeject,
+} FermiMoverInteractionType_t;  
 
 class NuclearModel {
 

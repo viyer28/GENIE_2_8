@@ -20,28 +20,26 @@ using namespace genie;
 
 //____________________________________________________________________________
 NuclearModelI::NuclearModelI() :
-Algorithm()
+Algorithm(), fFermiMoverInteractionType(kFermiMoveDefault)
 {
 
 }
 //____________________________________________________________________________
 NuclearModelI::NuclearModelI(string name) :
-Algorithm(name)
+Algorithm(name), fFermiMoverInteractionType(kFermiMoveDefault)
 {
 
 }
 //____________________________________________________________________________
 NuclearModelI::NuclearModelI(string name, string config) :
-Algorithm(name, config)
+Algorithm(name, config), fFermiMoverInteractionType(kFermiMoveDefault)
 {
-  // Set the fraction of 1p1h events to 1 for all nuclear models.
-  // This constant will be modified by EffectiveSF.cxx
-  fCurrf1p1h = 1;
+
 }
 //____________________________________________________________________________
 NuclearModelI::~NuclearModelI()
 {
-  fCurrf1p1h = 1;
+
 }
 //____________________________________________________________________________
 double NuclearModelI::RemovalEnergy(void) const
@@ -59,7 +57,7 @@ TVector3 NuclearModelI::Momentum3(void) const
   return fCurrMomentum;
 }
 //_____________________________________________________________________________
-double NuclearModelI::Getf1p1h(void) const
+virtual FermiMoverInteractionType_t NuclearModelI::GetFermiMoverInteractionType(void) const
 {
-  return fCurrf1p1h;
+  return fFermiMoverInteractionType;
 }

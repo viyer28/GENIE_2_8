@@ -45,10 +45,18 @@ c1@LowA=?HighA=?             double   Yes
 c2@LowA=?HighA=?             double   Yes
 c3@LowA=?HighA=?             double   Yes      Momentum distribution parameters for range of A Varies
 
+EjectSecondNucleon2p2h       bool     Yes      Eject second nucleon for effective              No
+                                               2p2h interaction
+MomentumMax                  double   Yes      Cutoff for momentum histogram                   1.0
+MomentumCutOff               double   Yes      Set all momentums past this to zero             0.65
 
 -->
 
 <param_set name="Default">
+
+<param type="bool" name="EjectSecondNucleon2p2h"> true </param>
+<param type="double" name="MomentumMax"> 1.0 </param>
+<param type="double" name="MomentumCutOff"> 0.65 </param>
 
 <!-- A=2 -->
 <param type="double" name="BindingEnergy@LowA=2;HighA=2"> 0.000126547 </param>

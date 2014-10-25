@@ -41,7 +41,7 @@ public:
   bool           GenerateNucleon (const Target & t) const;
   double         Prob            (double p, double w, const Target & t) const;
   NuclearModel_t ModelType       (const Target &) const 
-  { 
+  {
     return kNucmEffSpectralFunc; 
   }
 
@@ -77,6 +77,7 @@ private:
   mutable map<string, TH1D *> fProbDistroMap;
   double fPMax;
   double fPCutOff;
+  bool fEjectSecondNucleon2p2h;
 
   // Map from PDG code to spectral function parameters
   map<int, double> fNucRmvE;

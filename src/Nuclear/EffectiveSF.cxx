@@ -63,7 +63,6 @@ EffectiveSF::~EffectiveSF()
 bool EffectiveSF::GenerateNucleon(const Target & target) const
 {
   assert(target.HitNucIsSet());
-  fCurrf1p1h = 0;
   fCurrRemovalEnergy = 0;
   fCurrMomentum.SetXYZ(0,0,0);
 
@@ -95,10 +94,20 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
   //-- set removal energy 
   //
   fCurrRemovalEnergy = this->ReturnBindingEnergy(target);
-  fCurrf1p1h = this->Returnf1p1h(target);
+  double f1p1h = this->Returnf1p1h(target);
   // Since TE increases the QE peak via a 2p2h process, we decrease f1p1h
   // in order to increase the 2p2h interaction to account for this enhancement.
-  fCurrf1p1h /= this->GetTransEnh1p1hMod(target);
+  f1p1h /= this->GetTransEnh1p1hMod(target);
+  RandomGen * rnd = RandomGen::Instance();
+  const double prob = rnd->RndGen().Rndm();
+  if (prob < f1p1h) {
+    fFermiMoverInteractionType = kFermiMoveEffectiveSF1p1h;
+  } else if (fEjectSecondNucleon2p2h) {
+    fFermiMoverInteractionType = kFermiMoveEffectiveSF2p2h_eject;
+  } else {
+    fFermiMoverInteractionType = kFermiMoveEffectiveSF2p2h_noeject;
+  }
+    
   return true;
 }
 //____________________________________________________________________________
@@ -246,8 +255,8 @@ void EffectiveSF::LoadConfig(void)
   // Find out if Transverse enhancement is enabled to figure out whether to load
   // the 2p2h enhancement parameters.
   fPMax    = fConfig->GetDoubleDef ("MomentumMax", 1.0);
-
   fPCutOff = fConfig->GetDoubleDef ("MomentumCutOff", 0.65);
+  fEjectSecondNucleon2p2h = fConfig->GetBoolDef("EjectSecondNucleon2p2h", false);
 
   assert(fPMax > 0 && fPCutOff > 0 && fPCutOff <= fPMax);
   RgAlg form_factors_model = fConfig->GetAlgDef(
