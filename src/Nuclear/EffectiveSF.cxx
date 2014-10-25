@@ -98,9 +98,7 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
   // Since TE increases the QE peak via a 2p2h process, we decrease f1p1h
   // in order to increase the 2p2h interaction to account for this enhancement.
   f1p1h /= this->GetTransEnh1p1hMod(target);
-  RandomGen * rnd = RandomGen::Instance();
-  const double prob = rnd->RndGen().Rndm();
-  if (prob < f1p1h) {
+  if (rnd->RndGen().Rndm() < f1p1h) {
     fFermiMoverInteractionType = kFermiMoveEffectiveSF1p1h;
   } else if (fEjectSecondNucleon2p2h) {
     fFermiMoverInteractionType = kFermiMoveEffectiveSF2p2h_eject;

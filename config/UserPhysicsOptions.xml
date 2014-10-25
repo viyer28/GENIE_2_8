@@ -647,8 +647,6 @@ STFC, Rutherford Appleton Laboratory
   - genie::DipoleELFormFactorsModel
   - genie::BBA03ELFormFactorsModel, H.Budd, NuINT-02 proceedings
   - genie::BBA05ELFormFactorsModel, R.Bradford, A.Bodek, H.Budd and J.Arrington, hep-ex/0602017
-  - genie::TransverseEnhancementFFModel - in this case, must also specify some other form factor
-    calculation tool in TransverseEnhancementFFModel.xml
   -->
   <param type="alg" name="ElasticFormFactorsModel"> genie::BBA05ELFormFactorsModel/Default </param>
 

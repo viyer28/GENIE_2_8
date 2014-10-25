@@ -57,7 +57,7 @@ TVector3 NuclearModelI::Momentum3(void) const
   return fCurrMomentum;
 }
 //_____________________________________________________________________________
-virtual FermiMoverInteractionType_t NuclearModelI::GetFermiMoverInteractionType(void) const
+FermiMoverInteractionType_t NuclearModelI::GetFermiMoverInteractionType(void) const
 {
   return fFermiMoverInteractionType;
 }
