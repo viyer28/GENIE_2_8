@@ -86,7 +86,7 @@ void TransverseEnhancementFFModel::GetTransEnhParams(
                                fRangeMagFF_RT_A, teA) ||
       !GetValueFromNuclearMaps(target, fNucMagFF_RT_B,
                                fRangeMagFF_RT_B, teB) ||
-      teB == 0) {
+      *teB == 0) {
     *teA = 0;
     *teB = 1;
   }
