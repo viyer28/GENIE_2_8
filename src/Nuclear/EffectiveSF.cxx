@@ -47,6 +47,8 @@ NuclearModelI("genie::EffectiveSF", config)
 
 }
 //____________________________________________________________________________
+// Cleans up memory from probability distribution maps
+//____________________________________________________________________________
 EffectiveSF::~EffectiveSF()
 {
   map<string, TH1D*>::iterator iter = fProbDistroMap.begin();
@@ -59,6 +61,8 @@ EffectiveSF::~EffectiveSF()
   }
   fProbDistroMap.clear();
 }
+//____________________________________________________________________________
+// Set the removal energy, 3 momentum, and FermiMover interaction type 
 //____________________________________________________________________________
 bool EffectiveSF::GenerateNucleon(const Target & target) const
 {
@@ -75,7 +79,10 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
     exit(1);
   }
   double p = prob->GetRandom();
-  LOG("EffectiveSF", pINFO) << "|p,nucleon| = " << p;
+
+#ifdef __GENIE_LOW_LEVEL_MESG_ENABLED__
+  LOG("EffectiveSF", pDEBUG) << "|p,nucleon| = " << p;
+#endif
 
   RandomGen * rnd = RandomGen::Instance();
 
@@ -109,6 +116,8 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
   return true;
 }
 //____________________________________________________________________________
+// TODO: delete this? I have no idea what it does.
+//____________________________________________________________________________
 double EffectiveSF::Prob(double p, double w, const Target & target) const
 {
   if(w < 0) {
@@ -121,6 +130,9 @@ double EffectiveSF::Prob(double p, double w, const Target & target) const
   }
   return 1;
 }
+//____________________________________________________________________________
+// Check the map of nucleons to see if we have a probability distribution to
+// compute with.  If not, make one.
 //____________________________________________________________________________
 TH1D * EffectiveSF::ProbDistro(const Target & target) const
 {
@@ -140,6 +152,10 @@ TH1D * EffectiveSF::ProbDistro(const Target & target) const
 	
 }
 //____________________________________________________________________________
+// If transverse enhancement form factor modification is enabled, we must
+// increase the 2p2h contribution to account for the QE peak enhancement.
+// This gets that factor based on the target.
+//____________________________________________________________________________
 double EffectiveSF::GetTransEnh1p1hMod(const Target& target) const {
   double transEnhMod;
 	if(GetValueFromNuclearMaps(target, fTransEnh1p1hMods,
@@ -150,6 +166,9 @@ double EffectiveSF::GetTransEnh1p1hMod(const Target& target) const {
   // If none specified, assume no enhancement to quasielastic peak
   return 1.0;
 }
+//____________________________________________________________________________
+// Makes a momentum distribtuion for the given target using parameters
+// from the config file.
 //____________________________________________________________________________
 TH1D * EffectiveSF::MakeEffectiveSF(const Target & target) const
 {
@@ -174,6 +193,9 @@ TH1D * EffectiveSF::MakeEffectiveSF(const Target & target) const
   
   return NULL;
 }
+//____________________________________________________________________________
+// Makes a momentum distribution using the factors below (see reference) and
+// inserts it into the nucleus/momentum distribution map.
 //____________________________________________________________________________
 TH1D * EffectiveSF::MakeEffectiveSF(double bs, double bp, double alpha,
                                     double beta, double c1, double c2,
@@ -213,6 +235,8 @@ TH1D * EffectiveSF::MakeEffectiveSF(double bs, double bp, double alpha,
   return prob; 
 }
 //____________________________________________________________________________
+// Returns the binding energy for a given nucleus.
+//____________________________________________________________________________
 double EffectiveSF::ReturnBindingEnergy(const Target & target) const
 {
   double binding_en;
@@ -222,6 +246,9 @@ double EffectiveSF::ReturnBindingEnergy(const Target & target) const
   }
   return 0;
 }
+//____________________________________________________________________________
+// Returns the fraction of 1p1h events for a given nucleus.  All other events
+// are 2p2h.
 //____________________________________________________________________________
 double EffectiveSF::Returnf1p1h(const Target & target) const
 {
@@ -244,7 +271,8 @@ void EffectiveSF::Configure(string param_set)
   Algorithm::Configure(param_set);
   this->LoadConfig();
 }
-
+//____________________________________________________________________________
+// Every parameter for this comes from the config files.
 //____________________________________________________________________________
 void EffectiveSF::LoadConfig(void)
 {

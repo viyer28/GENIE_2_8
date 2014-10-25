@@ -1,3 +1,16 @@
+//____________________________________________________________________________
+/*
+ Copyright (c) 2003-2013, GENIE Neutrino MC Generator Collaboration
+ For the full text of the license visit http://copyright.genie-mc.org
+ or see $GENIE/LICENSE
+
+ Author: Brian Coopersmith, University of Rochester
+
+ For documentation see the corresponding header file.
+
+*/
+//____________________________________________________________________________
+
 #include "Utils/ConfigIsotopeMapUtils.h"
 
 #include "Messenger/Messenger.h"
@@ -11,7 +24,10 @@ namespace genie {
 namespace utils {
 namespace config {
 
-
+//____________________________________________________________________________
+// Given a map of nucleus PDGs to values and ranges of nucleus As to values,
+// return the value for the supplied target. Individual nucleus maps take 
+// precedence over the range maps.
 //____________________________________________________________________________
 bool GetValueFromNuclearMaps(
     const Target& target, const map<int, double>& nuc_to_val,
@@ -34,7 +50,10 @@ bool GetValueFromNuclearMaps(
   }
   return false;
 }
-
+//____________________________________________________________________________
+// Read in from the config file all listed NucA range parameters for a given
+// key.  Valid for As up to 419.  Stores them in the map from
+// pair(lowA, highA) to value.
 //____________________________________________________________________________
 void LoadAllNucARangesForKey(const char* key_name, const char* log_tool_name,
                              Registry* config,
@@ -50,7 +69,10 @@ void LoadAllNucARangesForKey(const char* key_name, const char* log_tool_name,
     }
   }
 }
-
+//____________________________________________________________________________
+// Read in from the config file all listed NucZ range parameters for a given
+// key. Valid for Zs up to 139 and As up to 3*Z.  Stores them in the map from
+// PDG code to value.
 //____________________________________________________________________________
 void LoadAllIsotopesForKey(const char* key_name, const char* log_tool_name,
                            Registry* config, map<int, double>* nuc_to_val) {
@@ -66,7 +88,9 @@ void LoadAllIsotopesForKey(const char* key_name, const char* log_tool_name,
     }
   }
 }
-
+//____________________________________________________________________________
+// Check if the key <valName>@Pdg=<pdgc> exists in config.  If so, load that
+// into val, and return true.  Otherwise return false.
 //____________________________________________________________________________
 bool GetDoubleKeyPDG(const char* valName, const int pdgc,
                      Registry* config, double* val)
@@ -80,7 +104,9 @@ bool GetDoubleKeyPDG(const char* valName, const int pdgc,
   *val = config->GetDoubleDef(key,0);
   return true;
 }
-
+//____________________________________________________________________________
+// Check if the key <valName>@LowA=<lowA>;HighA=<highA> exists in config. If
+// so load that into val and return true.  Otherwise return false.
 //____________________________________________________________________________
 bool GetDoubleKeyRangeNucA(const char* valName, const int lowA, 
                            const int highA, Registry* config, double* val)

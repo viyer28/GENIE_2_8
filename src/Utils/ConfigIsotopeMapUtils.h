@@ -1,3 +1,20 @@
+//____________________________________________________________________________
+/*!
+
+\namespace  genie::utils::config
+
+\brief      Simple functions for loading and reading nucleus dependent keys
+            from config files.
+
+\author     Brian Coopersmith, University of Rochester
+
+\created    October 23, 2014
+
+\cpright    Copyright (c) 2003-2013, GENIE Neutrino MC Generator Collaboration
+            For the full text of the license visit http://copyright.genie-mc.org
+            or see $GENIE/LICENSE
+*/
+//____________________________________________________________________________
 #ifndef _CONFIG_UTILS_H
 #define _CONFIG_UTILS_H
 

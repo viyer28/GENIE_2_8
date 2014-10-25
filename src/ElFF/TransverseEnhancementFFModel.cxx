@@ -4,16 +4,9 @@
  For the full text of the license visit http://copyright.genie-mc.org
  or see $GENIE/LICENSE
 
- Author: Costas Andreopoulos <costas.andreopoulos \at stfc.ac.uk>
-         STFC, Rutherford Appleton Laboratory 
+ Author: Brian Coopersmith, University of Rochester
 
- For the class documentation see the corresponding header file.
-
- Important revisions after version 2.0.0 :
- @ Mar 31, 2009 - CA
-   Was first added in v2.5.1.
- @ Sep 19, 2009 - CA
-   Moved into the ElFF package from its previous location               
+ For the class documentation see the corresponding header file.              
 
 */
 //____________________________________________________________________________
@@ -46,25 +39,38 @@ TransverseEnhancementFFModel::~TransverseEnhancementFFModel()
 
 }
 //____________________________________________________________________________
+// Return the electric form factor of the base model.
+//____________________________________________________________________________
 double TransverseEnhancementFFModel::Gep(const Interaction * interaction) const
 {
   return fElFormFactorsBase->Gep(interaction);
 }
+//____________________________________________________________________________
+// Return the magnetic form factor of the base model, multiplied by the
+// Transverse Enhancement function.
 //____________________________________________________________________________
 double TransverseEnhancementFFModel::Gmp(const Interaction * interaction) const
 {
   return GetTransEnhMagFF(fElFormFactorsBase->Gmp(interaction), interaction);
 }
 //____________________________________________________________________________
+// Return the electric form factor of the base model.
+//____________________________________________________________________________
 double TransverseEnhancementFFModel::Gen(const Interaction * interaction) const
 {
   return fElFormFactorsBase->Gen(interaction);
 }
 //____________________________________________________________________________
+// Return the magnetic form factor of the base model, multiplied by the
+// Transverse Enhancement function.
+//____________________________________________________________________________
 double TransverseEnhancementFFModel::Gmn(const Interaction * interaction) const
 {
   return GetTransEnhMagFF(fElFormFactorsBase->Gmn(interaction), interaction);
 }
+//____________________________________________________________________________
+// Multiplies the supplied magnetic form factor by the Transverse Enhancement
+// function and returns the result.
 //____________________________________________________________________________
 double TransverseEnhancementFFModel::GetTransEnhMagFF(
     double magFF, const Interaction * interaction) const
@@ -79,6 +85,8 @@ double TransverseEnhancementFFModel::GetTransEnhMagFF(
   double rt = 1 + transEnhA * Q2 * TMath::Exp(-Q2 / transEnhB);
   return TMath::Sqrt(rt)*magFF;
 }
+//____________________________________________________________________________
+// Returns the Transverse Enhancement parameters as loaded from config files.
 //____________________________________________________________________________
 void TransverseEnhancementFFModel::GetTransEnhParams(
     const Target& target, double* teA, double* teB) const {
@@ -103,6 +111,9 @@ void TransverseEnhancementFFModel::Configure(string config)
   Algorithm::Configure(config);
   this->LoadConfig();
 }
+//____________________________________________________________________________
+// Loads Transverse enhancement parameters.  All parameters are from config
+// files.
 //____________________________________________________________________________
 void TransverseEnhancementFFModel::LoadConfig(void)
 {
