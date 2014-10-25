@@ -215,21 +215,21 @@ TH1D * EffectiveSF::MakeEffectiveSF(double bs, double bp, double alpha,
 //____________________________________________________________________________
 double EffectiveSF::ReturnBindingEnergy(const Target & target) const
 {
-	double binding_en;
-	if(GetValueFromNuclearMaps(target, fNucRmvE, fRangeNucRmvE, &binding_en) &&
-	   binding_en > 0) {
-	  return binding_en;
-	}
+  double binding_en;
+  if (GetValueFromNuclearMaps(target, fNucRmvE, fRangeNucRmvE, &binding_en) &&
+      binding_en > 0) {
+    return binding_en;
+  }
   return 0;
 }
 //____________________________________________________________________________
 double EffectiveSF::Returnf1p1h(const Target & target) const
 {
   double f1p1h;
-	if(GetValueFromNuclearMaps(target, f1p1hMap, fRange1p1hMap, &f1p1h) &&
-	   f1p1h >= 0 && f1p1h <= 1) {
-	  return f1p1h;
-	}
+  if (GetValueFromNuclearMaps(target, f1p1hMap, fRange1p1hMap, &f1p1h) &&
+      f1p1h >= 0 && f1p1h <= 1) {
+    return f1p1h;
+  }
   return 1;
 }
 //____________________________________________________________________________
