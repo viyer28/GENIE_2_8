@@ -149,7 +149,6 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
       // Eject a remnant nucleon for the 2p2h process. Don't eject other
       // nucleon if target is deuterium- need to leave behind a
       // valid remnant nucleus.
-      LOG("Yo", pINFO) << RandomGen::Instance()->RndGen().Rndm();
       eject_nucleon_pdg = other_nucleon->PdgCode();
     }
   // Do default Fermi Moving
