@@ -116,7 +116,9 @@ bool EffectiveSF::GenerateNucleon(const Target & target) const
   return true;
 }
 //____________________________________________________________________________
-// TODO: delete this? I have no idea what it does.
+// Returns the probability of the bin containing p.  I don't know what w is
+// supposed to be, but I copied its implementation from Bodek-Ritchie.
+// Implements the interface.
 //____________________________________________________________________________
 double EffectiveSF::Prob(double p, double w, const Target & target) const
 {
