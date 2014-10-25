@@ -26,11 +26,11 @@ bool GetValueFromNuclearMaps(
   map<pair<int, int>, double>::const_iterator range_it =
       nucA_range_to_val.begin();
   for(; range_it != nucA_range_to_val.end(); ++range_it) {
-  	if (target.A() >= range_it->first.first &&
-  	    target.A() <= range_it->first.second) {
-  		*val = range_it->second;
-  		return true;
-  	}
+    if (target.A() >= range_it->first.first &&
+        target.A() <= range_it->first.second) {
+      *val = range_it->second;
+      return true;
+    }
   }
   return false;
 }
@@ -54,8 +54,8 @@ void LoadAllNucARangesForKey(const char* key_name, const char* log_tool_name,
 //____________________________________________________________________________
 void LoadAllIsotopesForKey(const char* key_name, const char* log_tool_name,
                            Registry* config, map<int, double>* nuc_to_val) {
-	for (int Z = 1; Z < 140; Z++) {
-		for (int A = Z; A < 3 * Z; A++) {
+  for (int Z = 1; Z < 140; Z++) {
+    for (int A = Z; A < 3 * Z; A++) {
       const int pdgc = pdg::IonPdgCode(A, Z);
       double val;
       if(GetDoubleKeyPDG(key_name, pdgc, config, &val)) {
@@ -63,8 +63,8 @@ void LoadAllIsotopesForKey(const char* key_name, const char* log_tool_name,
             " -> using " << key_name << " = " << val;
         (*nuc_to_val)[pdgc] = val;
       }
-		}
-	}
+    }
+  }
 }
 
 //____________________________________________________________________________
