@@ -225,7 +225,7 @@ void FermiMover::KickHitNucleon(GHepRecord * evrec) const
      throw exception;
   }
   if(eject_nucleon_pdg != 0) {
-  		this->Emit2ndNucleonFromSRC(evrec, eject_nucleon_pdg);
+    this->Emit2ndNucleonFromSRC(evrec, eject_nucleon_pdg);
   }
 }
 //___________________________________________________________________________
