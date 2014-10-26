@@ -5,6 +5,8 @@
 <!--
 Configuration for the Effective Spectral Function model
 
+See http://arxiv.org/abs/1405.0583 for definitions of parameters.  All parameters below are from the paper.
+
 Configurable Parameters:
 .............................................................................................................
 Name                         Type     Optional  Comment                                        Default
@@ -32,6 +34,10 @@ Unless specifying individual nuclei using the options above, make sure ranges ar
 you will be using.  All ranges are inclusive.
 To specify an open ended range on the right hand side (eg all A larger than x) use LowA=x;HighA=419
 Values of A greater than 419 will not be checked or read in properly.
+The PDG specific configurations take priority over the ranges.  So, for example, if you wanted a special
+binding energy for lithium 7, you could put:
+
+<param type="double" name="BindingEnergy@Pdg=1000030070> 0.08 </param>
 
 BindingEnergy@LowA=?;HighA=? double   Yes      effective binding energy for inclusive A range  Varies
 f1p1h@LowA=?;HighA=?         double   Yes      probability for 1p1h recoil for A range
