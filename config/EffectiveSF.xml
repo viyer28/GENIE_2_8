@@ -65,103 +65,103 @@ MomentumCutOff               double   Yes      Set all momentums past this to ze
 <param type="double" name="MomentumCutOff"> 0.65 </param>
 
 <!-- A=2 -->
-<param type="double" name="BindingEnergy@LowA=2;HighA=2"> 0.000126547 </param>
+<param type="double" name="BindingEnergy@LowA=2;HighA=2"> 0.13E-3 </param>
 <param type="double" name="f1p1h@LowA=2;HighA=2">         0.0 </param>
 <param type="double" name="bs@LowA=2;HighA=2">            0.413475 </param>
 <param type="double" name="bp@LowA=2;HighA=2">            1.75629 </param>
 <param type="double" name="alpha@LowA=2;HighA=2">         8.29029 </param>
-<param type="double" name="beta@LowA=2;HighA=2">          0.00362127 </param>
+<param type="double" name="beta@LowA=2;HighA=2">          3.621E-3 </param>
 <param type="double" name="c1@LowA=2;HighA=2">            0.186987 </param>
 <param type="double" name="c2@LowA=2;HighA=2">            6.24155 </param>
-<param type="double" name="c3@LowA=2;HighA=2">            0.000208154 </param>
+<param type="double" name="c3@LowA=2;HighA=2">            2.082E-4 </param>
 
 <!-- A=3 -->
-<param type="double" name="BindingEnergy@LowA=3;HighA=3"> 0.00534258 </param>
-<param type="double" name="f1p1h@LowA=3;HighA=3">         0.312043 </param>
-<param type="double" name="bs@LowA=3;HighA=3">            3.05583 </param>
-<param type="double" name="bp@LowA=3;HighA=3">            0.901861 </param>
-<param type="double" name="alpha@LowA=3;HighA=3">         10.932 </param>
-<param type="double" name="beta@LowA=3;HighA=3">          6.02976 </param>
-<param type="double" name="c1@LowA=3;HighA=3">            199.551 </param>
-<param type="double" name="c2@LowA=3;HighA=3">            1.92379 </param>
-<param type="double" name="c3@LowA=3;HighA=3">            5.26025e-05 </param>
+<param type="double" name="BindingEnergy@LowA=3;HighA=3"> 5.3E-3 </param>
+<param type="double" name="f1p1h@LowA=3;HighA=3">         0.312 </param>
+<param type="double" name="bs@LowA=3;HighA=3">            3.06 </param>
+<param type="double" name="bp@LowA=3;HighA=3">            0.902 </param>
+<param type="double" name="alpha@LowA=3;HighA=3">         10.93 </param>
+<param type="double" name="beta@LowA=3;HighA=3">          6.03 </param>
+<param type="double" name="c1@LowA=3;HighA=3">            199.6 </param>
+<param type="double" name="c2@LowA=3;HighA=3">            1.92 </param>
+<param type="double" name="c3@LowA=3;HighA=3">            5.26E-5 </param>
 
 <!-- 3 < A < 8 -->
-<param type="double" name="BindingEnergy@LowA=4;HighA=7"> 0.0140444 </param>
-<param type="double" name="f1p1h@LowA=4;HighA=7">         0.791142 </param>
-<param type="double" name="bs@LowA=4;HighA=7">            2.14131 </param>
-<param type="double" name="bp@LowA=4;HighA=7">            0.775316 </param>
-<param type="double" name="alpha@LowA=4;HighA=7">         9.72776 </param>
-<param type="double" name="beta@LowA=4;HighA=7">          7.56679 </param>
-<param type="double" name="c1@LowA=4;HighA=7">            183.428 </param>
-<param type="double" name="c2@LowA=4;HighA=7">            5.53273 </param>
-<param type="double" name="c3@LowA=4;HighA=7">            0.000589888 </param>
+<param type="double" name="BindingEnergy@LowA=4;HighA=7"> 14.0E-3 </param>
+<param type="double" name="f1p1h@LowA=4;HighA=7">         0.791 </param>
+<param type="double" name="bs@LowA=4;HighA=7">            2.14 </param>
+<param type="double" name="bp@LowA=4;HighA=7">            0.775 </param>
+<param type="double" name="alpha@LowA=4;HighA=7">         9.73 </param>
+<param type="double" name="beta@LowA=4;HighA=7">          7.57 </param>
+<param type="double" name="c1@LowA=4;HighA=7">            183.4 </param>
+<param type="double" name="c2@LowA=4;HighA=7">            5.53 </param>
+<param type="double" name="c3@LowA=4;HighA=7">            59.0E-5 </param>
 
 <!-- 7 < A < 17 -->
-<param type="double" name="BindingEnergy@LowA=8;HighA=16"> 0.0124744 </param>
-<param type="double" name="f1p1h@LowA=8;HighA=16">         0.807758 </param>
-<param type="double" name="bs@LowA=8;HighA=16">            2.11978 </param>
-<param type="double" name="bp@LowA=8;HighA=16">            0.736561 </param>
-<param type="double" name="alpha@LowA=8;HighA=16">         12.941 </param>
-<param type="double" name="beta@LowA=8;HighA=16">          10.6195 </param>
-<param type="double" name="c1@LowA=8;HighA=16">            197.014 </param>
-<param type="double" name="c2@LowA=8;HighA=16">            9.94218 </param>
-<param type="double" name="c3@LowA=8;HighA=16">            4.36074e-05 </param>
+<param type="double" name="BindingEnergy@LowA=8;HighA=16"> 12.5E-3 </param>
+<param type="double" name="f1p1h@LowA=8;HighA=16">         0.808 </param>
+<param type="double" name="bs@LowA=8;HighA=16">            2.12 </param>
+<param type="double" name="bp@LowA=8;HighA=16">            0.7366 </param>
+<param type="double" name="alpha@LowA=8;HighA=16">         12.94 </param>
+<param type="double" name="beta@LowA=8;HighA=16">          10.62 </param>
+<param type="double" name="c1@LowA=8;HighA=16">            197.0 </param>
+<param type="double" name="c2@LowA=8;HighA=16">            9.94 </param>
+<param type="double" name="c3@LowA=8;HighA=16">            4.36E-5 </param>
 
 <!-- 16 < A < 26 -->
-<param type="double" name="BindingEnergy@LowA=17;HighA=25"> 0.0166338 </param>
-<param type="double" name="f1p1h@LowA=17;HighA=25">         0.764847 </param>
-<param type="double" name="bs@LowA=17;HighA=25">            1.81985 </param>
-<param type="double" name="bp@LowA=17;HighA=25">            0.609983 </param>
-<param type="double" name="alpha@LowA=17;HighA=25">         6.81283 </param>
-<param type="double" name="beta@LowA=17;HighA=25">          6.07869 </param>
-<param type="double" name="c1@LowA=17;HighA=25">            25.8688 </param>
-<param type="double" name="c2@LowA=17;HighA=25">            0.590602 </param>
-<param type="double" name="c3@LowA=17;HighA=25">            0.00220846 </param>
+<param type="double" name="BindingEnergy@LowA=17;HighA=25"> 16.6E-3 </param>
+<param type="double" name="f1p1h@LowA=17;HighA=25">         0.765 </param>
+<param type="double" name="bs@LowA=17;HighA=25">            1.82 </param>
+<param type="double" name="bp@LowA=17;HighA=25">            0.610 </param>
+<param type="double" name="alpha@LowA=17;HighA=25">         6.81 </param>
+<param type="double" name="beta@LowA=17;HighA=25">          6.08 </param>
+<param type="double" name="c1@LowA=17;HighA=25">            25.9 </param>
+<param type="double" name="c2@LowA=17;HighA=25">            0.59 </param>
+<param type="double" name="c3@LowA=17;HighA=25">            221.0E-5 </param>
 
 <!-- 25 < A < 39 -->
-<param type="double" name="BindingEnergy@LowA=26;HighA=38"> 0.0124529 </param>
-<param type="double" name="f1p1h@LowA=26;HighA=38">         0.773977 </param>
-<param type="double" name="bs@LowA=26;HighA=38">            1.7394 </param>
-<param type="double" name="bp@LowA=26;HighA=38">            0.620821 </param>
-<param type="double" name="alpha@LowA=26;HighA=38">         7.20039 </param>
-<param type="double" name="beta@LowA=26;HighA=38">          6.73047 </param>
-<param type="double" name="c1@LowA=26;HighA=38">            21.0049 </param>
-<param type="double" name="c2@LowA=26;HighA=38">            0.592854 </param>
-<param type="double" name="c3@LowA=26;HighA=38">            0.00121452 </param>
+<param type="double" name="BindingEnergy@LowA=26;HighA=38"> 12.5E-3 </param>
+<param type="double" name="f1p1h@LowA=26;HighA=38">         0.774 </param>
+<param type="double" name="bs@LowA=26;HighA=38">            1.73 </param>
+<param type="double" name="bp@LowA=26;HighA=38">            0.621 </param>
+<param type="double" name="alpha@LowA=26;HighA=38">         7.20 </param>
+<param type="double" name="beta@LowA=26;HighA=38">          6.73 </param>
+<param type="double" name="c1@LowA=26;HighA=38">            21.0 </param>
+<param type="double" name="c2@LowA=26;HighA=38">            0.59 </param>
+<param type="double" name="c3@LowA=26;HighA=38">            121.5E-5 </param>
 
 <!-- 38 < A < 56 -->
-<param type="double" name="BindingEnergy@LowA=39;HighA=55"> 0.0205751 </param>
-<param type="double" name="f1p1h@LowA=39;HighA=55">         0.808667 </param>
-<param type="double" name="bs@LowA=39;HighA=55">            1.66649 </param>
-<param type="double" name="bp@LowA=39;HighA=55">            0.614772 </param>
-<param type="double" name="alpha@LowA=39;HighA=55">         8.54288 </param>
-<param type="double" name="beta@LowA=39;HighA=55">          8.61544 </param>
-<param type="double" name="c1@LowA=39;HighA=55">            199.992 </param>
-<param type="double" name="c2@LowA=39;HighA=55">            6.24716 </param>
-<param type="double" name="c3@LowA=39;HighA=55">            0.00269039 </param>
+<param type="double" name="BindingEnergy@LowA=39;HighA=55"> 20.6E-3 </param>
+<param type="double" name="f1p1h@LowA=39;HighA=55">         0.809 </param>
+<param type="double" name="bs@LowA=39;HighA=55">            1.67 </param>
+<param type="double" name="bp@LowA=39;HighA=55">            0.615 </param>
+<param type="double" name="alpha@LowA=39;HighA=55">         8.54 </param>
+<param type="double" name="beta@LowA=39;HighA=55">          8.62 </param>
+<param type="double" name="c1@LowA=39;HighA=55">            200.0 </param>
+<param type="double" name="c2@LowA=39;HighA=55">            6.25 </param>
+<param type="double" name="c3@LowA=39;HighA=55">            269.0E-5 </param>
 
 <!-- 55 < A < 61 -->
-<param type="double" name="BindingEnergy@LowA=56;HighA=60"> 0.0151136 </param>
-<param type="double" name="f1p1h@LowA=56;HighA=60">         0.822268 </param>
-<param type="double" name="bs@LowA=56;HighA=60">            1.79235 </param>
-<param type="double" name="bp@LowA=56;HighA=60">            0.597282 </param>
-<param type="double" name="alpha@LowA=56;HighA=60">         7.09555 </param>
-<param type="double" name="beta@LowA=56;HighA=60">          6.25598 </param>
-<param type="double" name="c1@LowA=56;HighA=60">            18.3744 </param>
-<param type="double" name="c2@LowA=56;HighA=60">            0.505288 </param>
-<param type="double" name="c3@LowA=56;HighA=60">            0.00140556 </param>
+<param type="double" name="BindingEnergy@LowA=56;HighA=60"> 15.1E-3 </param>
+<param type="double" name="f1p1h@LowA=56;HighA=60">         0.822 </param>
+<param type="double" name="bs@LowA=56;HighA=60">            1.79 </param>
+<param type="double" name="bp@LowA=56;HighA=60">            0.597 </param>
+<param type="double" name="alpha@LowA=56;HighA=60">         7.10 </param>
+<param type="double" name="beta@LowA=56;HighA=60">          6.26 </param>
+<param type="double" name="c1@LowA=56;HighA=60">            18.37 </param>
+<param type="double" name="c2@LowA=56;HighA=60">            0.505 </param>
+<param type="double" name="c3@LowA=56;HighA=60">            141.0E-5 </param>
 
 <!--  A > 60 -->
-<param type="double" name="BindingEnergy@LowA=61;HighA=419"> 0.0187988 </param>
-<param type="double" name="f1p1h@LowA=61;HighA=419">         0.89556 </param>
-<param type="double" name="bs@LowA=61;HighA=419">            1.52067 </param>
-<param type="double" name="bp@LowA=61;HighA=419">            0.585172 </param>
-<param type="double" name="alpha@LowA=61;HighA=419">         11.2361 </param>
-<param type="double" name="beta@LowA=61;HighA=419">          13.3336 </param>
-<param type="double" name="c1@LowA=61;HighA=419">            174.424 </param>
-<param type="double" name="c2@LowA=61;HighA=419">            5.28673 </param>
-<param type="double" name="c3@LowA=61;HighA=419">            9.27737e-05 </param>
+<param type="double" name="BindingEnergy@LowA=61;HighA=419"> 18.8E-3 </param>
+<param type="double" name="f1p1h@LowA=61;HighA=419">         0.896 </param>
+<param type="double" name="bs@LowA=61;HighA=419">            1.52 </param>
+<param type="double" name="bp@LowA=61;HighA=419">            0.585 </param>
+<param type="double" name="alpha@LowA=61;HighA=419">         11.24 </param>
+<param type="double" name="beta@LowA=61;HighA=419">          13.33 </param>
+<param type="double" name="c1@LowA=61;HighA=419">            174.4 </param>
+<param type="double" name="c2@LowA=61;HighA=419">            5.29 </param>
+<param type="double" name="c3@LowA=61;HighA=419">            9.28E-5 </param>
 
 <!-- Transverse enhancement parameters -->
 <param type="double" name="TransEnhf1p1hMod@LowA=1;HighA=11">   1.0 </param>
