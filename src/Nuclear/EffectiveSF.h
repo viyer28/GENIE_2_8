@@ -41,7 +41,7 @@ public:
   bool           GenerateNucleon (const Target & t) const;
   double         Prob            (double p, double w, const Target & t) const;
   NuclearModel_t ModelType       (const Target &) const 
-  { 
+  {
     return kNucmEffSpectralFunc; 
   }
 
@@ -53,35 +53,35 @@ public:
 private:
   TH1D * ProbDistro (const Target & t) const;
 
-  // Initializes the momentum probability distribution based on the parameters
-  // described in http://arxiv.org/abs/1405.0583 or supplied in EffectiveSF.xml
   TH1D * MakeEffectiveSF(const Target & target) const;
 
-  // Initializes the momentum probability distribution with the given
-  // parameters according to the functional form from
-  // http://arxiv.org/abs/1405.0583
   TH1D * MakeEffectiveSF(double bs, double bp, double alpha, double beta,
                          double c1, double c2, double c3,
                          const Target & target) const;
 
-  // Returns the binding energy given in http://arxiv.org/abs/1405.0583 or
-  // one supplied in EffectiveSF.xml.
   double ReturnBindingEnergy(const Target & target) const;
-  
-  // Returns f1p1h, the probability of interaction via the 1p1h process,
-  // given in the reference or supplied in EffectiveSF.xml.
+  double GetTransEnh1p1hMod(const Target& target) const;
+
   double Returnf1p1h(const Target & target) const;
   void   LoadConfig (void);
-  bool   GetDoubleKeyPDG(
-      const char* valName, double & val, const int pdgc) const;
 
   mutable map<string, TH1D *> fProbDistroMap;
   double fPMax;
   double fPCutOff;
-  double fTransEnh1p1hMod;
+  bool fEjectSecondNucleon2p2h;
+
+  // Map from PDG code to spectral function parameters
   map<int, double> fNucRmvE;
   map<int, double> f1p1hMap;
   map<int, std::vector<double> > fProbDistParams;
+  map<int, double> fTransEnh1p1hMods;
+  
+  // Map from range of A (pair<lowA, highA> inclusive> to spectral
+  // function parameters.
+  map<pair<int, int>, double> fRangeNucRmvE;
+  map<pair<int, int>, double> fRange1p1hMap;
+  map<pair<int, int>, std::vector<double> > fRangeProbDistParams;
+  map<pair<int, int>, double> fRangeTransEnh1p1hMods;
 };
 
 }         // genie namespace

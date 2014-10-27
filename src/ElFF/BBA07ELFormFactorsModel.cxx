@@ -70,7 +70,7 @@ double BBA07ELFormFactorsModel::Gmp(const Interaction * interaction) const
   double lagr  = this->Lagrange(interaction, fsParGmpLagrange);
   double kelly = this->Kelly(interaction, fsParGmpKelly);
   double gmp   = lagr*kelly; 
-  gmp = this->GetTransEnhMagFF(gmp,interaction);
+
   return gmp;
 }
 //____________________________________________________________________________
@@ -89,7 +89,7 @@ double BBA07ELFormFactorsModel::Gmn(const Interaction * interaction) const
   double lagr = this->Lagrange(interaction, fsParGmnLagrange_43);
   double gmp  = this->Gmp(interaction);
   double gmn  = lagr*gmp;
-  gmn = this->GetTransEnhMagFF(gmn,interaction);
+
   return gmn;
 }
 //____________________________________________________________________________
@@ -113,7 +113,7 @@ void BBA07ELFormFactorsModel::LoadConfig(void)
   // anomalous magnetic moments
   fMuP = fConfig->GetDoubleDef("MuP", gc->GetDouble("AnomMagnMoment-P"));
   fMuN = fConfig->GetDoubleDef("MuN", gc->GetDouble("AnomMagnMoment-N"));
-  this->ConfigTransEnh();
+
   // other parameters hardcoded for the time-being
   // ...
 
