@@ -57,7 +57,7 @@ double StrumiaVissaniIBDPXSec::XSec(
   const double         Ev     = init_state.ProbeE(kRfHitNucRest);
   const Target &       target = init_state.Tgt();
   const bool           isProt = target.IsProton();
-  if (isProt==false && target.IsNeutron()==false) {
+  if (isProt==false && target.IsNeutron()==false && target.isNucleus()==false) {
      LOG("StrumiaVissani", pERROR) << "*** Target is neither proton nor neutron!";
      return 0;
   }
