@@ -1,1 +1,13 @@
 _ROOT*
+*.o
+bin/
+build-env.log
+config/UserPhysicsOptions_bcoopers.xml
+config/UserPhysicsOptions_orig.xml
+lib/
+log.config
+log.make
+src/Conventions/GBuild.h
+src/Conventions/GVersion.h
+src/make/Make.config
+src/make/Make.config_no_paths
