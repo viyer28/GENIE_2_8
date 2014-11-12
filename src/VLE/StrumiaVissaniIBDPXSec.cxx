@@ -57,7 +57,7 @@ double StrumiaVissaniIBDPXSec::XSec(
   const double         Ev     = init_state.ProbeE(kRfHitNucRest);
   const Target &       target = init_state.Tgt();
   const bool           isProt = target.IsProton();
-  if (isProt==false && target.IsNeutron()==false && target.isNucleus()==false) {
+  if (isProt==false && target.IsNeutron()==false && target.IsNucleus()==false) {
      LOG("StrumiaVissani", pERROR) << "*** Target is neither proton nor neutron!";
      return 0;
   }
@@ -140,6 +140,19 @@ bool StrumiaVissaniIBDPXSec::ValidProcess(const Interaction * interaction) const
   }
   
   return false;
+
+  int nuc = init_state.Tgt().HitNucPdg();
+  int nu = init_state.ProbePdg();
+  
+  bool isP = pdg::IsProton(nuc);
+  bool isN = pdg::IsNeutron(nuc);
+  bool isnu = pdg::IsNeutrino(nu);
+  bool isnub = pdg::IsAntiNeutrino(nu);
+
+  bool prcok = proc_info.IsWeakCC() && ((isP&&isnub) || (isN&&isnu));
+  if(!prcok) return false;
+
+  return true;
 }
 //____________________________________________________________________________
 bool StrumiaVissaniIBDPXSec::ValidKinematics(const Interaction* interaction) const
