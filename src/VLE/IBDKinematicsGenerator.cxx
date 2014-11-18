@@ -72,8 +72,9 @@ void IBDKinematicsGenerator::ProcessEventRecord(GHepRecord * evrec) const
 
   //-- Get the interaction and set the 'trust' bits
   Interaction * interaction = evrec->Summary();
-  interaction->SetBit(kISkipProcessChk);
-  interaction->SetBit(kISkipKinematicChk);
+  // Until we can study this problem a bit better, don't disable these checks for IBD
+  /* interaction->SetBit(kISkipProcessChk); */
+  /* interaction->SetBit(kISkipKinematicChk); */
 
   //-- Note: The kinematic generator would be using the free nucleon cross
   //   section (even for nuclear targets) so as not to double-count nuclear
@@ -153,9 +154,10 @@ void IBDKinematicsGenerator::ProcessEventRecord(GHepRecord * evrec) const
         LOG("IBD", pINFO) << "Selected: Q^2 = " << gQ2;
 
         // reset bits
-        interaction->ResetBit(kISkipProcessChk);
-        interaction->ResetBit(kISkipKinematicChk);
-        interaction->ResetBit(kIAssumeFreeNucleon);
+        // Until we can study this problem a bit better, don't disable these checks for IBD
+        /* interaction->ResetBit(kISkipProcessChk); */
+        /* interaction->ResetBit(kISkipKinematicChk); */
+        /* interaction->ResetBit(kIAssumeFreeNucleon); */
 
         // compute the rest of the kinematical variables
 
