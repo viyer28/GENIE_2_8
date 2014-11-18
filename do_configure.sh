@@ -2,7 +2,7 @@
 ./configure \
 	--enable-debug \
 	--enable-atmo \
-	--enable-rwgt \
+	--enable-rwght \
 	--enable-vle-extension \
 	--with-optimiz-level=O0 \
 	--with-log4cpp-inc=$LOG4CPP_INC \
