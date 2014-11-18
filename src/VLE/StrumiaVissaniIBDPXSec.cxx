@@ -16,6 +16,8 @@
 #include "Algorithm/AlgConfigPool.h"
 #include "Base/XSecIntegratorI.h"
 #include "Messenger/Messenger.h"
+#include "PDG/PDGCodes.h"
+#include "PDG/PDGUtils.h"
 #include "Utils/KineUtils.h"
 #include "VLE/VLEConstants.h"
 #include "VLE/StrumiaVissaniIBDPXSec.h"
@@ -57,10 +59,6 @@ double StrumiaVissaniIBDPXSec::XSec(
   const double         Ev     = init_state.ProbeE(kRfHitNucRest);
   const Target &       target = init_state.Tgt();
   const bool           isProt = target.IsProton();
-  if (isProt==false && target.IsNeutron()==false && target.IsNucleus()==false) {
-     LOG("StrumiaVissani", pERROR) << "*** Target is neither proton nor neutron!";
-     return 0;
-  }
   const Kinematics &   kine   = interaction->Kine();
   const double         q2     = kine.q2();
   const double         mp     = (isProt) ? kProtonMass   : kNeutronMass;
@@ -130,16 +128,18 @@ double StrumiaVissaniIBDPXSec::Integral(const Interaction * interaction) const
 bool StrumiaVissaniIBDPXSec::ValidProcess(const Interaction * interaction) const
 {
   if(interaction->TestBit(kISkipProcessChk)) return true;
+
+  const InitialState & init_state = interaction->InitState();
+  const ProcessInfo &  proc_info  = interaction->ProcInfo();
+  const Target &       target     = init_state.Tgt();
   
   // should be IBD and either nu_e + n or anu_e + p
+  // this block is likely redundant with the logic below...
   if (interaction->ProcInfo().IsInverseBetaDecay()) {
-  
-     const InitialState & init_state = interaction -> InitState();
-     if (init_state.IsNuN() || init_state.IsNuBarP()) return true;
-     
+     if (init_state.IsNuN() || init_state.IsNuBarP()) {
+       LOG("StrumiaVissani", pDEBUG) << " proc was IBD and was IsNuN or IsNuBarP";
+     }
   }
-  
-  return false;
 
   int nuc = init_state.Tgt().HitNucPdg();
   int nu = init_state.ProbePdg();
@@ -149,10 +149,13 @@ bool StrumiaVissaniIBDPXSec::ValidProcess(const Interaction * interaction) const
   bool isnu = pdg::IsNeutrino(nu);
   bool isnub = pdg::IsAntiNeutrino(nu);
 
-  bool prcok = proc_info.IsWeakCC() && ((isP&&isnub) || (isN&&isnu));
-  if(!prcok) return false;
+  if (isP==false && isN==false && target.IsNucleus()==false) {
+     LOG("StrumiaVissani", pERROR) << "*** Non-nuclear target is neither proton nor neutron!";
+     return false;
+  }
 
-  return true;
+  bool prcok = proc_info.IsWeakCC() && ((isP&&isnub) || (isN&&isnu));
+  return prcok;
 }
 //____________________________________________________________________________
 bool StrumiaVissaniIBDPXSec::ValidKinematics(const Interaction* interaction) const
