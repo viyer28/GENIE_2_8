@@ -4,11 +4,14 @@ _ROOT*
 # Ignore build detritus
 build-env.log
 log.*
+bin/
+lib/
+config/UserPhysicsOptions_bcoopers.xml
+config/UserPhysicsOptions_orig.xml
 src/Conventions/GBuild.h
 src/Conventions/GVersion.h
 src/make/Make.config
 src/make/Make.config_no_paths
-bin
-lib
 
+# GNP's VIM stuff
 .syntastic_cpp_config
