@@ -40,6 +40,7 @@ public :
   void ProcessEventRecord (GHepRecord * evrec) const;
 
 private:
+  void           ArgonTargetSim       (GHepRecord * evrec) const;
   void           OxygenTargetSim      (GHepRecord * evrec) const;
   void           AddPhoton            (GHepRecord * evrec, double E0, double t) const;
   double         PhotonEnergySmearing (double E0, double t) const;
