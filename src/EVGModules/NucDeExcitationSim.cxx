@@ -98,7 +98,8 @@ void NucDeExcitationSim::ArgonTargetSim(GHepRecord * evrec) const
 	double neutrino_energy = interaction->InitState().ProbeE(kRfLab)*1000;
 
 
-	const Int_t numev=400;
+	// const Int_t numev=400;
+	const Int_t numev=1;
 	TRandom3* r = new TRandom3();
 
 	Double_t vertex[3]; 
@@ -693,7 +694,6 @@ void NucDeExcitationSim::ArgonTargetSim(GHepRecord * evrec) const
 
 	Int_t ground_level=numlevels-1;
 
-
 	while (i<numev) {	//Event loop 
 		Double_t rsl = r->Rndm();
 		Double_t tprob=0;
@@ -805,6 +805,7 @@ void NucDeExcitationSim::ArgonTargetSim(GHepRecord * evrec) const
 			}
 
 		}	//End of level loop
+        i++;
 	}
 }
 //___________________________________________________________________________
@@ -1061,8 +1062,8 @@ void NucDeExcitationSim::AddPhoton(
 
 	TLorentzVector x4(0,0,0,0);
 	TLorentzVector p4 = this->Photon4P(E);
-	//  GHepParticle gamma(kPdgGamma, kIStStableFinalState,iremnant,-1,-1,-1, p4, x4);
-	GHepParticle gamma(kPdgGamma, kIStStableFinalState,1,-1,-1,-1, p4, x4);
+	// GHepParticle gamma(kPdgGamma, kIStStableFinalState,iremnant,-1,-1,-1, p4, x4);
+	GHepParticle gamma(kPdgGamma, kIStStableFinalState, 1, -1, -1, -1, p4, x4);
 	evrec->AddParticle(gamma);  
 
 
