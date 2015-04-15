@@ -41,6 +41,9 @@ public :
 
 private:
   void           ArgonTargetSim       (GHepRecord * evrec) const;
+  double	 BranchingRatio	      (int level, int ilevel) const;
+  double	 DecayTo	      (int level, int decaynum) const;
+  int		 BrSize		      (int level) const;
   void           OxygenTargetSim      (GHepRecord * evrec) const;
   void           AddPhoton            (GHepRecord * evrec, double E0, double t) const;
   double         PhotonEnergySmearing (double E0, double t) const;
