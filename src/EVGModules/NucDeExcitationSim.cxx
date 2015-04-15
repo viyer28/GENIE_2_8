@@ -94,6 +94,8 @@ void NucDeExcitationSim::ArgonTargetSim(GHepRecord * evrec) const
 	GHepParticle * hitnuc = evrec->HitNucleon();
 	if(!hitnuc) return;
 
+	// "Simulating the Gamma Ray Signature of Electron Neutrinos in a Liquid Argon Detector", A.J. Roeth & Kate Scholberg (2013)
+
 	Interaction * interaction = evrec->Summary();
 	double neutrino_energy = interaction->InitState().ProbeE(kRfLab)*1000;
 
@@ -782,7 +784,7 @@ void NucDeExcitationSim::ArgonTargetSim(GHepRecord * evrec) const
 
 					this->AddPhoton(evrec, gamma_energy_G, dt);
 					LOG("NucDeEx", pNOTICE)
-                                << "Added photon";
+                               		 << "Added photon";
 					lastlevel = level;
 					ttime = time;
 
